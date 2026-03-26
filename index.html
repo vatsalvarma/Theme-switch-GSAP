@@ -9,7 +9,7 @@
     <style>
         :root {
             --transition-curve: cubic-bezier(0.77, 0, 0.175, 1);
-            --transition-duration: 1.2s;
+            --transition-duration: 1.6s;
         }
 
         * {
@@ -31,24 +31,31 @@
             height: 100vh;
         }
 
+        /* Essential FIX: we cannot use display:none or else CSS transitions won't trigger initially. */
         .slide {
             position: absolute;
             inset: 0;
-            display: none;
+            visibility: hidden;
+            opacity: 0;
             z-index: 1;
+            transition: visibility 0s var(--transition-duration), opacity var(--transition-duration) ease;
         }
 
         .slide.active {
-            display: block;
+            visibility: visible;
+            opacity: 1;
             z-index: 5;
+            transition: visibility 0s 0s, opacity 0.4s ease;
         }
 
         .slide.outgoing {
-            display: block;
+            visibility: visible;
+            opacity: 1;
             z-index: 4;
+            transition: visibility 0s var(--transition-duration);
         }
 
-        /* Background Layer with Reveal */
+        /* Background Layer with Wiping Reveal */
         .bg-layer {
             position: absolute;
             inset: 0;
@@ -63,24 +70,31 @@
 
         .slide.outgoing .bg-layer {
             clip-path: inset(0 0 0 0);
-            transition: none; /* Stay fully visible while next slide covers it */
+            transition: none; /* Stays static so the new slide covers it */
         }
 
-        /* Image Parallax */
+        /* Image Parallax & Depth of Field */
         .bg-image {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transform: scale(1.1) translateX(-5%);
-            transition: transform var(--transition-duration) var(--transition-curve);
+            /* Starts blurred, scaled, and translated left */
+            transform: scale(1.15) translateX(-8%);
+            filter: blur(15px) brightness(0.6);
+            transition: transform var(--transition-duration) var(--transition-curve),
+                        filter var(--transition-duration) ease;
         }
 
         .slide.active .bg-image {
+            /* Becomes fully clear and centered */
             transform: scale(1) translateX(0);
+            filter: blur(0px) brightness(1);
         }
 
         .slide.outgoing .bg-image {
-            transform: scale(1.05) translateX(3%);
+            /* Pushes slightly right, scaling up and blurring (parallax background depth) */
+            transform: scale(1.08) translateX(5%);
+            filter: blur(10px) brightness(0.4);
         }
 
         /* Dark Gradient Overlays for Text Readability */
@@ -88,7 +102,7 @@
             position: absolute;
             inset: 0;
             background: linear-gradient(to right, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.2) 60%, rgba(0,0,0,0.8) 100%),
-                        linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 35%);
+                        linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 35%);
             z-index: 2;
             pointer-events: none;
         }
@@ -120,7 +134,7 @@
             font-weight: 600;
             color: #fff;
             margin-bottom: -5px;
-            opacity: 0.9;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.4);
         }
 
         .main-title {
@@ -129,7 +143,7 @@
             line-height: 1.1;
             text-transform: capitalize;
             margin-bottom: 30px;
-            text-shadow: 0 8px 30px rgba(0,0,0,0.4);
+            text-shadow: 0 8px 30px rgba(0,0,0,0.6);
             letter-spacing: -1px;
         }
 
@@ -156,7 +170,7 @@
         }
 
         .icon-btn:hover {
-            background: rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.3);
             transform: translateY(-3px);
             box-shadow: 0 6px 20px rgba(0,0,0,0.3);
         }
@@ -207,15 +221,15 @@
             padding: 16px 22px;
             margin-bottom: 6px;
             border-radius: 6px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             border-top: 1px solid rgba(255, 255, 255, 0.03);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.25);
             transition: transform 0.3s ease, background 0.3s ease;
         }
 
         .item-card:hover {
-            transform: translateX(-5px);
-            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(-5px) !important;
+            background: rgba(255, 255, 255, 0.15);
         }
 
         .item-card h6 {
@@ -228,7 +242,7 @@
 
         .item-card p {
             font-size: 12px;
-            color: rgba(255, 255, 255, 0.75);
+            color: rgba(255, 255, 255, 0.8);
             line-height: 1.5;
         }
 
@@ -251,8 +265,8 @@
         }
 
         .cta-button:hover {
-            filter: brightness(1.15);
-            transform: translateY(-3px);
+            filter: brightness(1.2);
+            transform: translateY(-3px) !important;
             box-shadow: 0 12px 30px rgba(0,0,0,0.4);
         }
 
@@ -300,38 +314,45 @@
            STAGGERED ANIMATIONS FOR INCOMING ELEMENTS
         ========================================================= */
         
-        /* Initial Hidden States */
+        /* Initial Hidden States (Left titles slide in from left) */
         .cursive-subtitle,
         .main-title,
         .controls-container {
             opacity: 0;
-            transform: translateY(40px);
-            transition: opacity 0.8s ease, transform 0.8s var(--transition-curve);
+            transform: translateX(-20vw);
+            filter: blur(8px);
+            transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), 
+                        transform 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+                        filter 1s ease;
         }
 
+        /* Right cards slide in from the extremely far right */
         .right-section h5,
         .right-section .item-card,
         .cta-button {
             opacity: 0;
-            transform: translateX(80px);
-            transition: opacity 0.8s ease, transform 0.8s var(--transition-curve);
+            transform: translateX(30vw);
+            filter: blur(8px);
+            transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), 
+                        transform 1.4s cubic-bezier(0.16, 1, 0.3, 1),
+                        filter 1.2s ease;
         }
 
         /* Entering State (Slide is Active) */
-        .slide.active .cursive-subtitle { opacity: 1; transform: translateY(0); transition-delay: 0.5s; }
-        .slide.active .main-title { opacity: 1; transform: translateY(0); transition-delay: 0.6s; }
-        .slide.active .controls-container { opacity: 1; transform: translateY(0); transition-delay: 0.7s; }
+        .slide.active .cursive-subtitle { opacity: 1; transform: translateX(0); filter: blur(0); transition-delay: 0.2s; }
+        .slide.active .main-title { opacity: 1; transform: translateX(0); filter: blur(0); transition-delay: 0.3s; }
+        .slide.active .controls-container { opacity: 1; transform: translateX(0); filter: blur(0); transition-delay: 0.4s; }
 
-        .slide.active .right-section:nth-child(1) h5 { opacity: 1; transform: translateX(0); transition-delay: 0.6s; }
-        .slide.active .right-section:nth-child(1) .item-card { opacity: 1; transform: translateX(0); transition-delay: 0.7s; }
+        .slide.active .right-section:nth-child(1) h5 { opacity: 1; transform: translateX(0); filter: blur(0); transition-delay: 0.4s; }
+        .slide.active .right-section:nth-child(1) .item-card { opacity: 1; transform: translateX(0); filter: blur(0); transition-delay: 0.5s; }
 
-        .slide.active .right-section:nth-child(2) h5 { opacity: 1; transform: translateX(0); transition-delay: 0.8s; }
-        .slide.active .right-section:nth-child(2) .item-card:nth-of-type(1) { opacity: 1; transform: translateX(0); transition-delay: 0.9s; }
-        .slide.active .right-section:nth-child(2) .item-card:nth-of-type(2) { opacity: 1; transform: translateX(0); transition-delay: 1.0s; }
-        .slide.active .right-section:nth-child(2) .item-card:nth-of-type(3) { opacity: 1; transform: translateX(0); transition-delay: 1.1s; }
-        .slide.active .right-section:nth-child(2) .item-card:nth-of-type(4) { opacity: 1; transform: translateX(0); transition-delay: 1.2s; }
+        .slide.active .right-section:nth-child(2) h5 { opacity: 1; transform: translateX(0); filter: blur(0); transition-delay: 0.6s; }
+        .slide.active .right-section:nth-child(2) .item-card:nth-of-type(1) { opacity: 1; transform: translateX(0); filter: blur(0); transition-delay: 0.7s; }
+        .slide.active .right-section:nth-child(2) .item-card:nth-of-type(2) { opacity: 1; transform: translateX(0); filter: blur(0); transition-delay: 0.8s; }
+        .slide.active .right-section:nth-child(2) .item-card:nth-of-type(3) { opacity: 1; transform: translateX(0); filter: blur(0); transition-delay: 0.9s; }
+        .slide.active .right-section:nth-child(2) .item-card:nth-of-type(4) { opacity: 1; transform: translateX(0); filter: blur(0); transition-delay: 1.0s; }
 
-        .slide.active .cta-button { opacity: 1; transform: translateX(0); transition-delay: 1.4s; }
+        .slide.active .cta-button { opacity: 1; transform: translateX(0); filter: blur(0); transition-delay: 1.2s; }
 
         /* Rapid Fade-Out for Outgoing Slide to Prevent Clutter */
         .slide.outgoing .cursive-subtitle,
@@ -341,7 +362,8 @@
         .slide.outgoing .right-section .item-card,
         .slide.outgoing .cta-button {
             opacity: 0 !important;
-            transition: opacity 0.3s ease !important;
+            filter: blur(10px) !important;
+            transition: opacity 0.5s ease, filter 0.5s ease !important;
             transition-delay: 0s !important;
         }
 
@@ -538,7 +560,7 @@
                 const outgoingSlide = slides[currentIndex];
                 const incomingSlide = slides[index];
 
-                // Execute Transition
+                // Remove display 'none' by making it active before doing the transform
                 incomingSlide.classList.add('active');
                 outgoingSlide.classList.replace('active', 'outgoing');
 
@@ -552,7 +574,7 @@
                 setTimeout(() => {
                     outgoingSlide.classList.remove('outgoing');
                     isAnimating = false;
-                }, 1300); // slightly more than 1.2s to be safe
+                }, 1650); // wait for --transition-duration (1.6s) + padding
             }
 
             // 3. Attach Event Listeners
