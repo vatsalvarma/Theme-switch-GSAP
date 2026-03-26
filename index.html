@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Animated Theme Slider</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --transition-curve: cubic-bezier(0.77, 0, 0.175, 1);
+            --transition-duration: 1.2s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+            background-color: #000;
+            color: #fff;
+        }
+
+        .slider-wrapper {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .slide {
+            position: absolute;
+            inset: 0;
+            display: none;
+            z-index: 1;
+        }
+
+        .slide.active {
+            display: block;
+            z-index: 5;
+        }
+
+        .slide.outgoing {
+            display: block;
+            z-index: 4;
+        }
+
+        /* Background Layer with Reveal */
+        .bg-layer {
+            position: absolute;
+            inset: 0;
+            clip-path: inset(0 100% 0 0);
+            transition: clip-path var(--transition-duration) var(--transition-curve);
+            z-index: 1;
+        }
+
+        .slide.active .bg-layer {
+            clip-path: inset(0 0 0 0);
+        }
+
+        .slide.outgoing .bg-layer {
+            clip-path: inset(0 0 0 0);
+            transition: none; /* Stay fully visible while next slide covers it */
+        }
+
+        /* Image Parallax */
+        .bg-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scale(1.1) translateX(-5%);
+            transition: transform var(--transition-duration) var(--transition-curve);
+        }
+
+        .slide.active .bg-image {
+            transform: scale(1) translateX(0);
+        }
+
+        .slide.outgoing .bg-image {
+            transform: scale(1.05) translateX(3%);
+        }
+
+        /* Dark Gradient Overlays for Text Readability */
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to right, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.2) 60%, rgba(0,0,0,0.8) 100%),
+                        linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 35%);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* Content Layer */
+        .content-layer {
+            position: absolute;
+            inset: 0;
+            z-index: 10;
+            pointer-events: none; /* Let clicks pass to buttons */
+        }
+
+        /* Enable pointer events on interactive elements */
+        .left-panel, .right-panel, .controls-container, .theme-switchers {
+            pointer-events: auto;
+        }
+
+        /* Left Panel - Titles & Controls */
+        .left-panel {
+            position: absolute;
+            bottom: 8%;
+            left: 6%;
+            width: 50%;
+        }
+
+        .cursive-subtitle {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(32px, 4vw, 56px);
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: -5px;
+            opacity: 0.9;
+        }
+
+        .main-title {
+            font-size: clamp(48px, 6vw, 96px);
+            font-weight: 700;
+            line-height: 1.1;
+            text-transform: capitalize;
+            margin-bottom: 30px;
+            text-shadow: 0 8px 30px rgba(0,0,0,0.4);
+            letter-spacing: -1px;
+        }
+
+        /* Controls */
+        .controls-container {
+            display: flex;
+            gap: 15px;
+        }
+
+        .icon-btn {
+            width: 52px;
+            height: 52px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .icon-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .icon-btn svg {
+            transition: transform 0.3s ease;
+        }
+
+        .icon-btn.prev-btn:hover svg { transform: translateX(-2px); }
+        .icon-btn.next-btn:hover svg { transform: translateX(2px); }
+
+        .explore-btn {
+            background: var(--theme-accent);
+            border: none;
+        }
+
+        .explore-btn:hover {
+            background: var(--theme-accent);
+            filter: brightness(1.25);
+        }
+
+        /* Right Panel - Information Cards */
+        .right-panel {
+            position: absolute;
+            right: 6%;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 380px;
+            display: flex;
+            flex-direction: column;
+            pointer-events: auto;
+        }
+
+        .right-section h5 {
+            font-size: 11px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            margin-top: 25px;
+        }
+
+        .item-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 16px 22px;
+            margin-bottom: 6px;
+            border-radius: 6px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .item-card:hover {
+            transform: translateX(-5px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .item-card h6 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #fff;
+            letter-spacing: 0.5px;
+        }
+
+        .item-card p {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.75);
+            line-height: 1.5;
+        }
+
+        .cta-button {
+            background: var(--theme-accent);
+            color: #fff;
+            border: none;
+            padding: 20px;
+            width: 100%;
+            margin-top: 25px;
+            border-radius: 6px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .cta-button:hover {
+            filter: brightness(1.15);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+        }
+
+        /* 6 Switcher Buttons at Bottom Right */
+        .theme-switchers {
+            position: absolute;
+            bottom: 8%;
+            right: 6%;
+            display: flex;
+            gap: 12px;
+            z-index: 100;
+        }
+
+        .dash-btn {
+            width: 35px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        /* Invisible expanded click area */
+        .dash-btn::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            bottom: -10px;
+            left: -5px;
+            right: -5px;
+        }
+
+        .dash-btn:hover {
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        .dash-btn.active {
+            background: #fff;
+            width: 60px;
+            box-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+
+        /* =========================================================
+           STAGGERED ANIMATIONS FOR INCOMING ELEMENTS
+        ========================================================= */
+        
+        /* Initial Hidden States */
+        .cursive-subtitle,
+        .main-title,
+        .controls-container {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease, transform 0.8s var(--transition-curve);
+        }
+
+        .right-section h5,
+        .right-section .item-card,
+        .cta-button {
+            opacity: 0;
+            transform: translateX(80px);
+            transition: opacity 0.8s ease, transform 0.8s var(--transition-curve);
+        }
+
+        /* Entering State (Slide is Active) */
+        .slide.active .cursive-subtitle { opacity: 1; transform: translateY(0); transition-delay: 0.5s; }
+        .slide.active .main-title { opacity: 1; transform: translateY(0); transition-delay: 0.6s; }
+        .slide.active .controls-container { opacity: 1; transform: translateY(0); transition-delay: 0.7s; }
+
+        .slide.active .right-section:nth-child(1) h5 { opacity: 1; transform: translateX(0); transition-delay: 0.6s; }
+        .slide.active .right-section:nth-child(1) .item-card { opacity: 1; transform: translateX(0); transition-delay: 0.7s; }
+
+        .slide.active .right-section:nth-child(2) h5 { opacity: 1; transform: translateX(0); transition-delay: 0.8s; }
+        .slide.active .right-section:nth-child(2) .item-card:nth-of-type(1) { opacity: 1; transform: translateX(0); transition-delay: 0.9s; }
+        .slide.active .right-section:nth-child(2) .item-card:nth-of-type(2) { opacity: 1; transform: translateX(0); transition-delay: 1.0s; }
+        .slide.active .right-section:nth-child(2) .item-card:nth-of-type(3) { opacity: 1; transform: translateX(0); transition-delay: 1.1s; }
+        .slide.active .right-section:nth-child(2) .item-card:nth-of-type(4) { opacity: 1; transform: translateX(0); transition-delay: 1.2s; }
+
+        .slide.active .cta-button { opacity: 1; transform: translateX(0); transition-delay: 1.4s; }
+
+        /* Rapid Fade-Out for Outgoing Slide to Prevent Clutter */
+        .slide.outgoing .cursive-subtitle,
+        .slide.outgoing .main-title,
+        .slide.outgoing .controls-container,
+        .slide.outgoing .right-section h5,
+        .slide.outgoing .right-section .item-card,
+        .slide.outgoing .cta-button {
+            opacity: 0 !important;
+            transition: opacity 0.3s ease !important;
+            transition-delay: 0s !important;
+        }
+
+        /* Prevent Text Selection */
+        .main-title, .cursive-subtitle, h5, h6 {
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="slider-wrapper" id="slider-wrapper">
+        <div id="slides-container"></div>
+        <div class="theme-switchers" id="theme-switchers"></div>
+    </div>
+
+    <script>
+        const themes = [
+            {
+                subtitle: "Visit Iceland",
+                title: "Land of Ice and Fire",
+                image: "https://images.unsplash.com/photo-1476610182048-b716b8518aae?w=1600&q=80",
+                accent: "#a98059",
+                cardBg: "rgba(56, 45, 38, 0.45)",
+                bestTime: "October to March (Northern Lights) or June to August (mild weather).",
+                activities: [
+                    { name: "Golden Circle Tour:", desc: "Visit waterfalls, geysers, and Thingvellir National Park." },
+                    { name: "Northern Lights Tour:", desc: "See the auroras on a clear winter night." },
+                    { name: "Whale Watching:", desc: "Spot humpbacks and orcas off Reykjavik's coast." },
+                    { name: "Glacier Trekking:", desc: "Explore ice caves and volcanic glaciers." }
+                ],
+                ctaText: "START YOUR ICELANDIC ADVENTURE"
+            },
+            {
+                subtitle: "Visit Japan",
+                title: "The Zen Experience",
+                image: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1600&q=80",
+                accent: "#b23a28",
+                cardBg: "rgba(60, 20, 15, 0.45)",
+                bestTime: "March to April (Cherry Blossoms) or October to November (Autumn foliage).",
+                activities: [
+                    { name: "Tea Ceremony Experience:", desc: "Learn the art of making and serving matcha." },
+                    { name: "Fushimi Inari Shrine:", desc: "Walk through thousands of vermilion torii gates." },
+                    { name: "Gion District:", desc: "Spot geishas and explore ancient teahouses." },
+                    { name: "Kiyomizu-dera Temple:", desc: "Enjoy panoramic city views from this UNESCO site." }
+                ],
+                ctaText: "SECURE YOUR ZEN EXPERIENCE"
+            },
+            {
+                subtitle: "Visit Greece",
+                title: "Mediterranean Dream",
+                image: "https://images.unsplash.com/photo-1533105079780-92b9be482077?w=1600&q=80",
+                accent: "#2d6da6",
+                cardBg: "rgba(20, 45, 75, 0.45)",
+                bestTime: "May, June, September or October for warm weather and thinner crowds.",
+                activities: [
+                    { name: "Santorini Caldera Cruise:", desc: "Sail around the volcano and soak in hot springs." },
+                    { name: "Acropolis Tour:", desc: "Discover Athens' ancient citadel and Parthenon." },
+                    { name: "Mykonos Beach Hopping:", desc: "Experience pristine beaches and vibrant nightlife." },
+                    { name: "Delphi Excursion:", desc: "Visit the sanctuary of Apollo in the mountains." }
+                ],
+                ctaText: "PLAN YOUR GRECIAN ESCAPE"
+            },
+            {
+                subtitle: "Visit Kenya",
+                title: "The Great Safari",
+                image: "https://images.unsplash.com/photo-1516426122078-c23e76319801?w=1600&q=80",
+                accent: "#a67c52",
+                cardBg: "rgba(50, 40, 30, 0.45)",
+                bestTime: "July to October for the spectacular Great Migration.",
+                activities: [
+                    { name: "Masai Mara Game Drive:", desc: "Track the Big Five across the golden savanna." },
+                    { name: "Hot Air Balloon Safari:", desc: "Float above the plains at sunrise." },
+                    { name: "Giraffe Manor Visit:", desc: "Interact with endangered Rothschild's giraffes." },
+                    { name: "Mount Kenya Trek:", desc: "Hike Africa's second highest peak." }
+                ],
+                ctaText: "BOOK YOUR KENYAN SAFARI"
+            },
+            {
+                subtitle: "Visit Maldives",
+                title: "Tropical Paradise",
+                image: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=1600&q=80",
+                accent: "#2c8b91",
+                cardBg: "rgba(20, 50, 60, 0.45)",
+                bestTime: "November to April for sunny days and clear skies.",
+                activities: [
+                    { name: "Scuba Diving:", desc: "Explore vibrant coral reefs and marine life." },
+                    { name: "Sunset Dolphin Cruise:", desc: "Watch playful dolphins in the Indian Ocean." },
+                    { name: "Overwater Spa:", desc: "Relax with traditional treatments above the water." },
+                    { name: "Underwater Dining:", desc: "Enjoy exquisite cuisine surrounded by sea life." }
+                ],
+                ctaText: "RESERVE YOUR ISLAND RETREAT"
+            },
+            {
+                subtitle: "Visit Switzerland",
+                title: "Alpine Splendor",
+                image: "https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?w=1600&q=80",
+                accent: "#6b8ea5",
+                cardBg: "rgba(35, 45, 60, 0.45)",
+                bestTime: "December to March for snow sports, or June to September for hiking.",
+                activities: [
+                    { name: "Glacier Express:", desc: "Take a scenic train ride through the Alps." },
+                    { name: "Matterhorn Skiing:", desc: "Hit the slopes near the iconic peak in Zermatt." },
+                    { name: "Lake Geneva Cruise:", desc: "Sail past castles and vineyards on pristine waters." },
+                    { name: "Jungfraujoch Excursion:", desc: "Visit the 'Top of Europe' via cogwheel train." }
+                ],
+                ctaText: "EXPLORE THE SWISS ALPS"
+            }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('slides-container');
+            const switchers = document.getElementById('theme-switchers');
+
+            // 1. Generate HTML
+            themes.forEach((theme, index) => {
+                // Generate Switcher Dash
+                const dash = document.createElement('div');
+                dash.className = `dash-btn ${index === 0 ? 'active' : ''}`;
+                dash.dataset.index = index;
+                switchers.appendChild(dash);
+
+                // Generate Activities HTML
+                let activitiesHTML = '';
+                theme.activities.forEach(act => {
+                    activitiesHTML += `
+                        <div class="item-card">
+                            <h6>${act.name}</h6>
+                            <p>${act.desc}</p>
+                        </div>
+                    `;
+                });
+
+                // Generate Slide HTML
+                const slideHTML = `
+                    <div class="slide ${index === 0 ? 'active' : ''}" style="--theme-accent: ${theme.accent}; --card-bg: ${theme.cardBg};">
+                        <div class="bg-layer">
+                            <img class="bg-image" src="${theme.image}" alt="${theme.title}">
+                            <div class="overlay"></div>
+                        </div>
+                        
+                        <div class="content-layer">
+                            <div class="left-panel">
+                                <h4 class="cursive-subtitle">${theme.subtitle}</h4>
+                                <h1 class="main-title">${theme.title}</h1>
+                                
+                                <div class="controls-container">
+                                    <button class="icon-btn prev-btn">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                                    </button>
+                                    <button class="icon-btn next-btn">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                                    </button>
+                                    <button class="icon-btn explore-btn">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="right-panel">
+                                <div class="right-section">
+                                    <h5>BEST TIME TO VISIT</h5>
+                                    <div class="item-card">
+                                        <p>${theme.bestTime}</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="right-section">
+                                    <h5>MUST-DO ACTIVITIES</h5>
+                                    ${activitiesHTML}
+                                </div>
+
+                                <button class="cta-button">${theme.ctaText}</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', slideHTML);
+            });
+
+            // 2. Setup Animation Logic
+            const slides = document.querySelectorAll('.slide');
+            const dashes = document.querySelectorAll('.dash-btn');
+            const prevBtns = document.querySelectorAll('.prev-btn');
+            const nextBtns = document.querySelectorAll('.next-btn');
+            
+            let currentIndex = 0;
+            let isAnimating = false;
+
+            function goToSlide(index) {
+                if (isAnimating || index === currentIndex) return;
+                isAnimating = true;
+
+                const outgoingSlide = slides[currentIndex];
+                const incomingSlide = slides[index];
+
+                // Execute Transition
+                incomingSlide.classList.add('active');
+                outgoingSlide.classList.replace('active', 'outgoing');
+
+                // Update switchers
+                dashes[currentIndex].classList.remove('active');
+                dashes[index].classList.add('active');
+
+                currentIndex = index;
+
+                // Wait for the full clip-path / transform duration to finish
+                setTimeout(() => {
+                    outgoingSlide.classList.remove('outgoing');
+                    isAnimating = false;
+                }, 1300); // slightly more than 1.2s to be safe
+            }
+
+            // 3. Attach Event Listeners
+            dashes.forEach(dash => {
+                dash.addEventListener('click', () => {
+                    const index = parseInt(dash.getAttribute('data-index'));
+                    goToSlide(index);
+                });
+            });
+
+            nextBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    goToSlide((currentIndex + 1) % slides.length);
+                });
+            });
+
+            prevBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    goToSlide((currentIndex - 1 + slides.length) % slides.length);
+                });
+            });
+
+        });
+    </script>
+</body>
+</html>
