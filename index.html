@@ -3,2361 +3,601 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <title>GreenSiri</title>
-
+    <title>Premium Animated Theme Slider</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --transition-curve: cubic-bezier(0.77, 0, 0.175, 1);
+            --transition-duration: 1.6s;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: "Poppins", sans-serif;
         }
 
-        body, html {
-            height: 100%;
-            overflow-x: hidden;
-        }
-
-        /* Scroll lock class */
-        body.scroll-locked {
+        body {
+            font-family: 'Poppins', sans-serif;
             overflow: hidden;
-            height: 100vh;
-        }
-
-        /* ==================== HERO SECTION ==================== */
-        .hero {
-            position: relative;
-            height: 100vh;
-            width: 100%;
-            overflow: hidden;
-        }
-
-        .hero video {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transform: translate(-50%, -50%);
-            z-index: -1;
-        }
-
-        .navbar {
-            position: absolute;
-            top: 0;
-            width: 100%;
-            padding: 20px 60px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 10;
-        }
-
-        .logo img {
-            height: 50px;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 30px;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: #fff;
-            font-size: 14px;
-            letter-spacing: 1px;
-            font-weight: 500;
-            transition: 0.3s;
-        }
-
-        .nav-links a:hover {
-            opacity: 0.7;
-        }
-
-        .bottom-text {
-            position: absolute;
-            bottom: 40px;
-            left: 60px;
+            background-color: #000;
             color: #fff;
         }
 
-        .bottom-text h1 {
-            font-size: 100px;
-            font-weight: 700;
-            letter-spacing: 2px;
-        }
-
-        .bottom-text p {
-            font-size: 54px;
-            letter-spacing: 4px;
-            margin-top: 5px;
-        }
-
-        .overlay {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.3);
-            z-index: 1;
-        }
-
-        /* ==================== THEME SLIDER SECTION ==================== */
         .slider-wrapper {
             position: relative;
             width: 100vw;
             height: 100vh;
         }
 
-        .theme-grid {
+        /* Essential FIX: we cannot use display:none or else CSS transitions won't trigger initially. */
+        .slide {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            display: grid;
-            grid-template-columns: 1.2fr 0.9fr 1fr 1fr;
-            grid-template-rows: 0.8fr 1.2fr 1.5fr 0.5fr;
-            gap: 15px;
-            padding: 15px;
+            inset: 0;
             visibility: hidden;
-            pointer-events: none;
-            z-index: 1;
-            background-image: var(--bg-image);
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-        }
-
-        .theme-grid.active {
-            visibility: visible;
-            pointer-events: auto;
-            z-index: 2;
-            transition: visibility 0s 0s;
-        }
-
-        .theme-grid.outgoing {
-            visibility: visible;
-            pointer-events: none;
-            z-index: 3;
-            transition: visibility 0s 0s;
-        }
-
-        .title-card { grid-column: 1 / 3; grid-row: 1 / 3; display: flex; align-items: flex-end; }
-        .main-text { grid-column: 1 / 2; grid-row: 3 / 4; justify-content: flex-start; }
-        .action-btn { grid-column: 1 / 2; grid-row: 4 / 5; cursor: pointer; justify-content: center; align-items: center; text-transform: uppercase; font-size: 11px; font-weight: 600; letter-spacing: 1px;}
-        .img2 { grid-column: 2 / 3; grid-row: 3 / 4; }
-        .nav-container { grid-column: 2 / 3; grid-row: 4 / 5; display: flex; gap: 15px; background: transparent !important; padding: 0 !important; }
-        .explore { grid-column: 3 / 4; grid-row: 1 / 2; justify-content: flex-start; }
-        .center-img { grid-column: 3 / 4; grid-row: 2 / 4; }
-        .stay { grid-column: 3 / 4; grid-row: 4 / 5; justify-content: flex-start; }
-        .img4 { grid-column: 4 / 5; grid-row: 1 / 3; }
-        .cuisine { grid-column: 4 / 5; grid-row: 3 / 4; justify-content: flex-start; }
-        .food-img { grid-column: 4 / 5; grid-row: 4 / 5; }
-
-        .nav-btn {
-            flex: 1;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 11px;
-            letter-spacing: 1px;
-            border-radius: 6px;
-            transition: opacity 0.3s, background-color 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .nav-btn:hover {
-            opacity: 0.8;
-            filter: brightness(1.2);
-        }
-
-        .card {
-            border-radius: 6px;
-            padding: 24px;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 1.2s ease;
-        }
-
-        .title-content h1 { font-size: 64px; font-weight: 600; line-height: 1.1; margin-bottom: 5px; }
-        .title-content p { font-size: 12px; font-weight: 400; letter-spacing: 1px; opacity: 0.9; }
-        .main-text h2 { font-size: 26px; font-weight: 600; margin-bottom: 15px; line-height: 1.3;}
-        .main-text p { font-size: 11px; line-height: 1.6; opacity: 0.7; }
-        .bg-solid h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
-        .bg-solid p { font-size: 11px; line-height: 1.5; opacity: 0.7; }
-
-        .theme-grid:not(.active):not(.outgoing) .card.slide-left { transform: translateX(-15vw); opacity: 0; }
-        .theme-grid:not(.active):not(.outgoing) .card.slide-right { transform: translateX(15vw); opacity: 0; }
-        .theme-grid:not(.active):not(.outgoing) .card.slide-up { transform: translateY(-15vh); opacity: 0; }
-        .theme-grid:not(.active):not(.outgoing) .card.slide-down { transform: translateY(15vh); opacity: 0; }
-
-        .theme-grid.active .card {
-            transform: translate(0, 0);
-            opacity: 1;
-        }
-
-        .theme-grid.outgoing .card.slide-left { transform: translateX(-40vw); opacity: 0; }
-        .theme-grid.outgoing .card.slide-right { transform: translateX(40vw); opacity: 0; }
-        .theme-grid.outgoing .card.slide-up { transform: translateY(-40vh); opacity: 0; }
-        .theme-grid.outgoing .card.slide-down { transform: translateY(40vh); opacity: 0; }
-
-        .card:nth-child(1) { transition-delay: 0.0s; }
-        .card:nth-child(2) { transition-delay: 0.05s; }
-        .card:nth-child(3) { transition-delay: 0.1s; }
-        .card:nth-child(4) { transition-delay: 0.08s; }
-        .card:nth-child(5) { transition-delay: 0.02s; }
-        .card:nth-child(6) { transition-delay: 0.03s; }
-        .card:nth-child(7) { transition-delay: 0.15s; }
-        .card:nth-child(8) { transition-delay: 0.1s; }
-        .card:nth-child(9) { transition-delay: 0.06s; }
-        .card:nth-child(10){ transition-delay: 0.14s; }
-        .card:nth-child(11){ transition-delay: 0.09s; }
-
-        .bg-solid { background-color: var(--card-bg); color: var(--text); }
-        .action-btn { background-color: var(--action-bg); color: var(--text); transition: filter 0.3s; }
-        .action-btn:hover { filter: brightness(1.2); }
-        .nav-btn { background-color: var(--card-bg); color: var(--text); }
-
-        .bg-image {
-            background-color: var(--card-bg);
-            position: relative;
-        }
-        .bg-image::after {
-            content: '';
-            position: absolute;
-            bottom: 0; left: 0; right: 0;
-            height: 60%;
-            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-            border-radius: 0 0 6px 6px;
-            z-index: 1;
             opacity: 0;
-            pointer-events: none;
+            z-index: 1;
+            transition: visibility 0s var(--transition-duration), opacity var(--transition-duration) ease;
         }
-        .title-card::after { opacity: 1; }
-        .title-card .title-content { position: relative; z-index: 2; color: #fff;}
 
-        .stay h3 {
-    margin: 0;              /* remove default gap */
-    line-height: 1.1;       /* tighter text */
-}
-
-.stay p {
-    margin: 4px 0 0 0;     /* reduce space above */
-}
-
-
-
-        /* ==================== STRIP GALLERY SECTION ==================== */
-        .strip-heading {
-            position: absolute;
-            top: 20px;
-            left: 140px;
+        .slide.active {
+            visibility: visible;
+            opacity: 1;
             z-index: 5;
+            transition: visibility 0s 0s, opacity 0.4s ease;
         }
 
-        .strip-section {
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            position: relative;
-            background-image: url("https://raw.githubusercontent.com/vatsalvarma/Greensiri-landingpage/refs/heads/main/Group%207.jpg.jpeg");
-            background-size: 100% auto;
-            background-position: center;
-            background-repeat: no-repeat;
+        .slide.outgoing {
+            visibility: visible;
+            opacity: 1;
+            z-index: 4;
+            transition: visibility 0s var(--transition-duration);
         }
 
-        .strip-section::before {
-            content: "";
+        /* Background Layer with Wiping Reveal */
+        .bg-layer {
             position: absolute;
+            inset: 0;
+            clip-path: inset(0 100% 0 0);
+            transition: clip-path var(--transition-duration) var(--transition-curve);
             z-index: 1;
         }
 
-        .strip-gallery {
-            display: flex;
-            gap: clamp(10px, 1.4vw, 24px);
-            position: relative;
-            z-index: 2;
-            transform: translateX(-300px);
+        .slide.active .bg-layer {
+            clip-path: inset(0 0 0 0);
         }
 
-        .strip-card {
-            width: clamp(100px, 11vw, 200px);
-            height: clamp(300px, 55vh, 600px);
-            overflow: hidden;
-            border-radius: 1px;
-            position: relative;
-            transition: 0.6s ease;
+        .slide.outgoing .bg-layer {
+            clip-path: inset(0 0 0 0);
+            transition: none; /* Stays static so the new slide covers it */
         }
 
-        .strip-card img {
+        /* Image Parallax & Depth of Field */
+        .bg-image {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transform: scale(1.0);
-            transition: 4s ease;
+            /* Starts blurred, scaled, and translated left */
+            transform: scale(1.15) translateX(-8%);
+            filter: blur(15px) brightness(0.6);
+            transition: transform var(--transition-duration) var(--transition-curve),
+                        filter var(--transition-duration) ease;
         }
 
-        .strip-card:nth-child(odd)  { animation: stripFloatUp 6s ease-in-out infinite; }
-        .strip-card:nth-child(even) { animation: stripFloatDown 6s ease-in-out infinite; }
-
-        @keyframes stripFloatUp {
-            0%, 100% { transform: translateY(-20px); }
-            50%       { transform: translateY(25px); }
+        .slide.active .bg-image {
+            /* Becomes fully clear and centered */
+            transform: scale(1) translateX(0);
+            filter: blur(0px) brightness(1);
         }
 
-        @keyframes stripFloatDown {
-            0%, 100% { transform: translateY(25px); }
-            50%       { transform: translateY(-20px); }
+        .slide.outgoing .bg-image {
+            /* Pushes slightly right, scaling up and blurring (parallax background depth) */
+            transform: scale(1.08) translateX(5%);
+            filter: blur(10px) brightness(0.4);
         }
 
-        .strip-card:hover { width: clamp(150px, 18vw, 300px); }
-        .strip-card:hover img { transform: scale(1); }
-
-        .strip-title {
+        /* Dark Gradient Overlays for Text Readability */
+        .overlay {
             position: absolute;
-            top: 70%;
-            left: 100px;
-            transform: translateY(-50%) rotate(-90deg);
-            transform-origin: left center;
-            color: white;
-            font-size: clamp(12px, 1.2vw, 22px);
-            font-weight: 700;
-            letter-spacing: 3px;
-            text-align: center;
-            z-index: 3;
-            text-shadow: 0 5px 20px rgba(0,0,0,0.9);
-            transition: 0.4s;
-        }
-
-        .strip-card:hover .strip-title { transform: translate(-50%,-60%); font-size: clamp(14px, 1.5vw, 24px); }
-
-        .scroll-indicator {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: white;
-            font-size: 14px;
-            font-weight: 500;
-            letter-spacing: 2px;
-            opacity: 0;
-            transition: opacity 0.3s;
-            z-index: 100;
+            inset: 0;
+            background: linear-gradient(to right, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.2) 60%, rgba(0,0,0,0.8) 100%),
+                        linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 35%);
+            z-index: 2;
             pointer-events: none;
         }
 
-        .scroll-indicator.visible {
-            opacity: 1;
-        }
-
-        /* ==================== AMENITIES SECTION ==================== */
-        :root {
-          --brown: #834318;
-          --text-main: #f7f1e8;
-          --text-sub: #f3e2d2;
-        }
-
-        .amenities-scene {
-          position: relative;
-          width: 100%;
-          height: 100vh;
-          background-image: url("https://raw.githubusercontent.com/vatsalvarma/Amminities-GS/refs/heads/main/ammnbg.2.0.png");
-          background-size: cover;
-          background-repeat: no-repeat;
-          background-position: center center;
-        }
-
-        .card-slider {
-          position: absolute;
-          right: 10%;
-          top: 35%;
-          transform: translateY(-50%);
-          width: 800px;
-          height: 350px;
-          overflow: hidden;
-        }
-
-        .card-track {
-          display: flex;
-          align-items: center;
-          transition: transform 0.6s ease;
-        }
-
-        .amenity-card {
-          position: relative;
-          min-width: 260px;
-          height: 340px;
-          margin: 0 20px;
-          border-radius: 20px;
-          overflow: hidden;
-          opacity: 0.8;
-          transform: scale(0.8);
-          transition: all 0.5s ease;
-        }
-
-        .amenity-card img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-
-        .amenity-card span {
-          position: absolute;
-          bottom: 20px;
-          left: 0;
-          width: 100%;
-          text-align: center;
-          color: white;
-          font-weight: bold;
-          z-index: 2;
-        }
-
-        .amenity-card::after {
-          content: "";
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
-        }
-
-        .amenity-card.active {
-          opacity: 1;
-          transform: scale(1.1);
-        }
-
-        .banner {
-          position: absolute;
-          left: 0%;
-          bottom: 6.2%;
-          width: min(85vw, 820px);
-          background: var(--brown);
-          padding: min(4.15vh, 26px) min(3.7vw, 38px) min(4.5vh, 29px);
-          color: var(--text-main);
-          z-index: 5;
-        }
-
-        .banner p {
-          margin: 0;
-          line-height: 1.06;
-          text-transform: uppercase;
-          letter-spacing: 1px;
-          white-space: nowrap;
-        }
-
-        .banner .top {
-          font-weight: 700;
-          font-size: min(6.6vh, 47px);
-          color: var(--text-main);
-        }
-
-        .banner .bottom {
-          margin-top: min(1.5vh, 8px);
-          font-weight: 300;
-          font-size: min(6.5vh, 45px);
-          color: var(--text-sub);
-        }
-
-        .girl-image {
-          position: absolute;
-          left: 50px;
-          bottom: 0;
-          height: 110%;
-          z-index: 9999;
-          pointer-events: none;
-        }
-
-        @media (max-width: 1024px) {
-          .banner { width: 68vw; }
-          .banner .top,
-          .banner .bottom { font-size: clamp(24px, 4.5vw, 46px); }
-        }
-
-        /* ==================== INVESTMENT CIRCLES SECTION ==================== */
-        .sec-incomes {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-            background-color: #f5ede6;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .sec-incomes .bg-image {
+        /* Content Layer */
+        .content-layer {
             position: absolute;
             inset: 0;
-            background-image: url('https://raw.githubusercontent.com/vatsalvarma/TarniFarms/refs/heads/main/circles%20bgg%20(1).png');
-            background-size: cover;
-            background-position: center;
-            z-index: 1;
+            z-index: 10;
+            pointer-events: none; /* Let clicks pass to buttons */
         }
 
-        .incomes-header {
-            position: relative;
-            z-index: 5;
-            margin-top: 7vh;
-            text-align: center;
-            color: #4a3424;
-        }
-
-        .incomes-header h1 {
-            font-size: 36px;
-            font-weight: 800;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-        }
-
-        .incomes-header h2 {
-            font-size: 13px;
-            font-weight: 500;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: #6d513f;
-        }
-
-        .circles-stage {
-            position: relative;
-            z-index: 5;
-            flex: 1;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .circles-row {
-            position: relative;
-            width: 100%;
-            height: 370px;
-            overflow: visible;
-            cursor: grab;
-            user-select: none;
-        }
-
-        .circles-row:active { cursor: grabbing; }
-
-        .c-item {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            transition:
-                transform 0.72s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                opacity 0.72s ease;
-            will-change: transform, opacity;
-        }
-
-        .c-label {
-            font-weight: 700;
-            color: #4a3424;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 14px;
-            transition:
-                font-size 0.72s ease,
-                opacity 0.5s ease,
-                font-weight 0.4s ease;
-            white-space: nowrap;
-        }
-
-        .c-shape {
-            border-radius: 50%;
-            background-color: #402714;
-            background-size: cover;
-            background-position: center;
-            box-shadow: 0 18px 55px rgba(64, 39, 20, 0.28);
-            transition:
-                width  0.72s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                height 0.72s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                box-shadow 0.3s ease,
-                transform 0.22s ease;
-            overflow: hidden;
-            flex-shrink: 0;
-        }
-
-        .c-info {
-            margin-top: 26px;
-            text-align: center;
-        }
-
-        .c-desc {
-            font-size: 15px;
-            font-weight: 500;
-            letter-spacing: 2.5px;
-            text-transform: uppercase;
-            color: #6d513f;
-            margin-bottom: 18px;
-            min-height: 22px;
-            transition: opacity 0.35s ease;
-            transform: translateY(-45px);
-        }
-
-        .c-arrows {
-            display: flex;
-            gap: 30px;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .c-arrows button {
-            background: none;
-            border: none;
-            font-size: 22px;
-            color: #a07455;
-            cursor: pointer;
-            transition: transform 0.25s ease, opacity 0.25s ease;
-            opacity: 0.75;
-            padding: 4px 8px;
-             position: relative;
-            top: -60px;
-        }
-
-        .c-arrows button:hover {
-            transform: scale(1.35);
-            opacity: 1;
-        }
-
-        .boy-image {
-          position: absolute;
-          left: 1053px;
-          bottom: 6%;
-          height: 39%;
-          z-index: 9999;
-          pointer-events: none;
-        }
-
-        @media (max-width: 1024px) {
-          .banner { width: 68vw; }
-          .banner .top,
-          .banner .bottom { font-size: clamp(24px, 4.5vw, 46px); }
-        }
-
-        /* ==================== APPRECIATION WHEEL SECTION ==================== */
-        .sec-wheel {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-            background-color: #1a2228;
-            color: #fff;
-            display: flex;
-            align-items: center;
-        }
-
-        .wheel-bg {
-            position: absolute;
-            inset: 0;
-            background-image: url('https://raw.githubusercontent.com/vatsalvarma/TarniFarms/refs/heads/main/Image%201.png');
-            background-size: cover;
-            background-position: center;
-            filter: blur(8px) brightness(0.6);
-            transform: scale(1.1);
-            z-index: 1;
-        }
-
-        .wheel-content {
-            position: relative;
-            z-index: 5;
-            width: 100%;
-            height: 100%;
-        }
-
-        .arc-container {
-            position: absolute;
-            left: -40vh;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 80vh;
-            height: 80vh;
-            border-radius: 50%;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-        }
-
-        .arc-rotator {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            position: relative;
-            transition: transform 1s cubic-bezier(0.6, 0, 0.2, 1);
-        }
-
-        .wheel-node {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 60px;
-            height: 60px;
-            margin-top: -30px;
-            margin-left: -30px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: all 1s cubic-bezier(0.6, 0, 0.2, 1);
-        }
-
-        .wheel-node img {
-            width: 40px;
-            height: 40px;
-            filter: brightness(0) invert(1);
-            transition: all 1s ease;
-        }
-
-        .node-label {
-            position: absolute;
-            left: 80px;
-            white-space: nowrap;
-            font-size: 14px;
-            font-weight: 600;
-            letter-spacing: 1px;
-            opacity: 0.6;
-            transition: opacity 0.5s, transform 0.5s;
-        }
-
-        .wheel-node.active img {
-            width: 70px;
-            height: 70px;
-            filter: drop-shadow(0 0 10px rgba(255,255,255,0.8));
-        }
-
-        .wheel-node.active .node-label { opacity: 0; }
-
-        .wheel-node::before {
-            content: '';
-            position: absolute;
-            top: 50%; left: 50%;
-            width: 6px; height: 6px;
-            background: #fff;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            z-index: -1;
-        }
-
-        .right-display {
-            position: absolute;
-            right: 8%;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 500px;
-            display: flex;
-            flex-direction: column;
-            text-align: right;
-            align-items: flex-end;
-        }
-
-        .top-subtitle {
-            font-weight: 400;
-            color: rgba(255,255,255,0.9);
-            margin-bottom: 5px;
-            text-transform: uppercase;
-        }
-
-        .huge-title {
-            font-weight: 800;
-            color: #fff;
-            line-height: 1.1;
-            margin-bottom: 50px;
-        }
-
-        .dynamic-info {
-            display: flex;
-            max-width: 400px;
-            flex-direction: column;
-            align-items: flex-end;
-            margin-top: 40px;
-            min-height: 200px;
-        }
-
-        .info-name {
-            font-size: 36px;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.6s ease, transform 0.6s ease;
-        }
-
-        .info-tagline {
-            font-size: 16px;
-            font-weight: 500;
-            color: rgba(255,255,255,0.8);
-            margin-bottom: 20px;
-            letter-spacing: 1px;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.6s ease 0.1s, transform 0.6s ease 0.1s;
-        }
-
-        .info-desc {
-            font-size: 12px;
-            line-height: 1.6;
-            color: rgba(255,255,255,0.6);
-            max-width: 400px;
-            text-align: right;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.6s ease 0.2s, transform 0.6s ease 0.2s;
-        }
-
-        .dynamic-info.show .info-name,
-        .dynamic-info.show .info-tagline,
-        .dynamic-info.show .info-desc {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .wheel-controls {
-            display: flex;
-            gap: 20px;
-            margin-top: 50px;
-        }
-
-        .wheel-controls button {
-            background: transparent;
-            border: none;
-            color: #fff;
-            font-size: 30px;
-            cursor: pointer;
-            transition: transform 0.3s;
-            opacity: 0.7;
-        }
-
-        .wheel-controls button:hover {
-            transform: scale(1.2);
-            opacity: 1;
-        }
-
-        /* ==================== FARMHOUSES SLIDER SECTION ==================== */
-        .farmhouses-section {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-            background-color: #000;
-        }
-
-        #slider-container {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
-        }
-
-        .layer {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            pointer-events: none;
-        }
-
-        #layer-bg { z-index: 1; }
-        .bg-slide {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-position: center;
-            transform: translateX(100%);
-            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
-        }
-        .bg-slide.active {
-            transform: translateX(0);
-        }
-        .bg-slide.prev {
-            transform: translateX(-100%);
-            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1) 0.1s;
-        }
-
-        .bg-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(90deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.4) 100%);
-        }
-
-        #layer-text { z-index: 2; }
-        .text-slide {
-            position: absolute;
-            top: 25%;
-            left: 50%;
-            transform: translate(-150vw, -50%);
-            width: 70%;
-            text-align: center;
-            transition: transform 1.4s cubic-bezier(0.77, 0, 0.175, 1) 0.3s;
-            opacity: 0;
-        }
-        .text-slide.active {
-            transform: translate(-50%, -50%);
-            opacity: 1;
-        }
-        .text-slide.prev {
-            transform: translate(150vw, -50%);
-            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1) 0.6s, opacity 1.2s 0.6s;
-            opacity: 0;
-        }
-
-        .hero-title {
-            font-size: 120px;
-            font-weight: 800;
-            line-height: 0.9;
-            text-transform: uppercase;
-            letter-spacing: 5px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .hero-title .filled {
-            color: #fff;
-            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        .hero-title .outlined {
-            color: transparent;
-            -webkit-text-stroke: 2px #fff;
-            margin-top: -20px;
-            margin-left: 200px;
-        }
-
-        #layer-png { z-index: 3; }
-        .png-slide {
-            position: absolute;
-            bottom: 0%;
-            left: 45%;
-            transform: translateX(100vw) scale(0.9);
-            height: 100vh;
-            max-width: 100vw;
-            object-fit: contain;
-            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
-        }
-        .png-slide.active {
-            transform: translateX(-50%) scale(1);
-        }
-        .png-slide.prev {
-            transform: translateX(-150vw) scale(0.9);
-            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
-        }
-
-        #layer-ui { z-index: 4; pointer-events: auto; }
-
-        .ui-slide {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-        }
-
-        .ui-slide.active {
+        /* Enable pointer events on interactive elements */
+        .left-panel, .right-panel, .controls-container, .theme-switchers {
             pointer-events: auto;
         }
 
-        .bottom-left-panel {
+        /* Left Panel - Titles & Controls */
+        .left-panel {
             position: absolute;
-            bottom: 60px;
-            left: 60px;
-            transform: translateX(100vw);
-            transition: transform 1s cubic-bezier(0.77, 0, 0.175, 1) 0.4s;
-            opacity: 0;
+            bottom: 8%;
+            left: 6%;
+            width: 50%;
         }
 
-        .ui-slide.active .bottom-left-panel {
-            transform: translateX(0);
-            opacity: 1;
-        }
-
-        .ui-slide.prev .bottom-left-panel {
-            transform: translateX(-100vw);
-            transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
-            opacity: 0;
-        }
-
-        .crafted-text {
-            font-size: 52px;
-            font-weight: 400;
-            line-height: 1.1;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            color: #fff;
-        }
-
-        .slider-controls {
-            display: flex;
-            gap: 20px;
-        }
-
-        .arrow-btn {
-            background: transparent;
-            border: none;
-            color: #fff;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            opacity: 0.8;
-            transition: all 0.3s;
-        }
-
-        .arrow-btn:hover {
-            opacity: 1;
-            transform: scale(1.1);
-        }
-
-        .arrow-btn svg {
-            width: 40px;
-            height: 40px;
-        }
-
-        .right-panel {
-            position: absolute;
-            top: 70%;
-            right: 70px;
-            transform: translateY(-50%) translateX(100vw);
-            width: 360px;
-            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1) 0.2s;
-            opacity: 0;
-        }
-
-        .ui-slide.active .right-panel {
-            transform: translateY(-50%) translateX(0);
-            opacity: 1;
-        }
-
-        .ui-slide.prev .right-panel {
-            transform: translateY(-50%) translateX(-100vw);
-            transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
-            opacity: 0;
-        }
-
-        .glass-title {
-            text-align: center;
-            padding: 5px;
-            font-size: 26px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            margin-bottom: 15px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            color: #fff;
-        }
-
-        .adv-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .adv-item {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            padding: 0px 20px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-
-        /* Initial hidden state (like premium slider) */
-.adv-item {
-    opacity: 0;
-    transform: translateX(120px);
-    filter: blur(0px);
-    transition:
-        opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-        transform 1s cubic-bezier(0.16, 1, 0.3, 1),
-        filter 0.8s ease;
-}
-
-/* Stagger animation when active */
-.ui-slide.active .adv-item {
-    opacity: 1;
-    transform: translateX(0);
-    filter: blur(0);
-}
-
-/* Stagger delays (THIS is the magic 🔥) */
-.ui-slide.active .adv-item:nth-child(1) { transition-delay: 0.5s; }
-.ui-slide.active .adv-item:nth-child(2) { transition-delay: 0.85s; }
-.ui-slide.active .adv-item:nth-child(3) { transition-delay: 1.0s; }
-.ui-slide.active .adv-item:nth-child(4) { transition-delay: 1.3s; }
-
-/* When slide is leaving */
-.ui-slide.prev .adv-item {
-    opacity: 0 !important;
-    transform: translateX(120px) !important;
-    filter: blur(10px) !important;
-    transition: 0.4s ease !important;
-}
-.adv-item:hover {
-    transform: translateX(-8px) scale(1.02);
-}
-
-        .adv-item h4 {
-            font-size: 15px;
+        .cursive-subtitle {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(32px, 4vw, 56px);
             font-weight: 600;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
             color: #fff;
+            margin-bottom: -5px;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.4);
         }
 
-        .adv-item p {
-            font-size: 10px;
-            font-weight: 300;
-            line-height: 1.5;
-            color: rgba(255,255,255,0.7);
-            text-transform: uppercase;
+        .main-title {
+            font-size: clamp(48px, 6vw, 96px);
+            font-weight: 700;
+            line-height: 1.1;
+            text-transform: capitalize;
+            margin-bottom: 30px;
+            text-shadow: 0 8px 30px rgba(0,0,0,0.6);
+            letter-spacing: -1px;
         }
 
-         /* --- FOOTER --- */
-        footer {
-            background-color: #0b0b0b;
-            color: white;
-            padding: 60px 8%;
-        }
-
-        .footer-grid {
+        /* Controls */
+        .controls-container {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            flex-wrap: wrap;
-            gap: 20px;
-            border-bottom: 1px solid #333;
-            padding-bottom: 40px;
-        }
-
-        /* Add right borders to columns except the last */
-        .footer-col {
-            flex: 1;
-            min-width: 180px;
-            padding-right: 20px;
-            border-right: 1px solid #333;
-        }
-
-        .footer-col:last-child {
-            border-right: none;
-            padding-right: 0;
-        }
-
-        .footer-col:nth-child(2) {
-            display: flex;
-            flex-direction: column;
             gap: 15px;
         }
 
-        .footer-col:nth-child(3) {
+        .icon-btn {
+            width: 52px;
+            height: 52px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
             display: flex;
-            flex-direction: column;
-            align-items: flex-start;
             justify-content: center;
-        }
-
-        .footer-text {
-            font-size: 11px;
-            color: #888;
-            line-height: 1.6;
-            margin-top: 10px;
-        }
-
-        .footer-bold {
-            font-size: 11px;
-            font-weight: 600;
-            color: #ccc;
-            margin-bottom: 5px;
-            display: block;
-        }
-
-        .footer-contact-item {
-            display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 11px;
-            color: #aaa;
-        }
-
-        .footer-contact-item i {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 25px;
-            height: 25px;
-            border: 1px solid #444;
-            border-radius: 50%;
-            font-size: 10px;
-        }
-
-        .footer-logo {
-            width: 150px;
-            height: auto;
-            filter: brightness(0) invert(1);
-        }
-
-        .footer-subscribe h5 {
-            font-size: 11px;
-            font-weight: 600;
-            color: #ccc;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-        }
-
-        .subscribe-form {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .subscribe-form input {
-            background-color: transparent;
-            border: 1px solid #444;
-            padding: 8px 12px;
-            color: white;
-            font-size: 11px;
-            border-radius: 4px;
-            outline: none;
-        }
-
-        .subscribe-form button {
-            background-color: transparent;
-            color: white;
-            border: 1px solid #fff;
-            padding: 8px 12px;
-            font-size: 10px;
-            font-weight: 600;
-            letter-spacing: 1px;
             cursor: pointer;
-            border-radius: 30px;
-            transition: 0.3s;
+            transition: all 0.3s ease;
         }
 
-        .subscribe-form button:hover {
-            background-color: white;
-            color: black;
+        .icon-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
         }
 
-        .subscribe-note {
-            font-size: 9px;
-            color: #666;
-            margin-top: 5px;
+        .icon-btn svg {
+            transition: transform 0.3s ease;
         }
 
-        .footer-social h5 {
+        .icon-btn.prev-btn:hover svg { transform: translateX(-2px); }
+        .icon-btn.next-btn:hover svg { transform: translateX(2px); }
+
+        .explore-btn {
+            background: var(--theme-accent);
+            border: none;
+        }
+
+        .explore-btn:hover {
+            background: var(--theme-accent);
+            filter: brightness(1.25);
+        }
+
+        /* Right Panel - Information Cards */
+        .right-panel {
+            position: absolute;
+            right: 6%;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 380px;
+            display: flex;
+            flex-direction: column;
+            pointer-events: auto;
+        }
+
+        .right-section h5 {
             font-size: 11px;
             font-weight: 600;
-            color: #ccc;
-            margin-bottom: 15px;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 2px;
             text-transform: uppercase;
+            margin-bottom: 15px;
+            margin-top: 25px;
         }
 
-       .footer-social-icons {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            max-width: 90px;
+        .item-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 16px 22px;
+            margin-bottom: 6px;
+            border-radius: 6px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+            transition: transform 0.3s ease, background 0.3s ease;
         }
 
-        .footer-social-icons a {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 28px;
-            height: 28px;
-            border: 1px solid #555;
-            border-radius: 50%;
-            color: #aaa;
+        .item-card:hover {
+            transform: translateX(-5px) !important;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .item-card h6 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #fff;
+            letter-spacing: 0.5px;
+        }
+
+        .item-card p {
             font-size: 12px;
-            transition: 0.3s;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.5;
         }
 
-        .footer-social-icons a:hover {
-            border-color: white;
-            color: white;
+        .cta-button {
+            background: var(--theme-accent);
+            color: #fff;
+            border: none;
+            padding: 20px;
+            width: 100%;
+            margin-top: 25px;
+            border-radius: 6px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
         }
 
-         /* MAP section */
-
-        .map{
-        height: 100vh;
+        .cta-button:hover {
+            filter: brightness(1.2);
+            transform: translateY(-3px) !important;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.4);
         }
 
-        .map img {
-        height: 100vh;
-        width: 100vw;
+        /* 6 Switcher Buttons at Bottom Right */
+        .theme-switchers {
+            position: absolute;
+            bottom: 8%;
+            right: 6%;
+            display: flex;
+            gap: 12px;
+            z-index: 100;
         }
 
+        .dash-btn {
+            width: 35px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+        }
 
+        /* Invisible expanded click area */
+        .dash-btn::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            bottom: -10px;
+            left: -5px;
+            right: -5px;
+        }
 
+        .dash-btn:hover {
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        .dash-btn.active {
+            background: #fff;
+            width: 60px;
+            box-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+
+        /* =========================================================
+           STAGGERED ANIMATIONS FOR INCOMING ELEMENTS
+        ========================================================= */
+        
+        /* Initial Hidden States (Left titles slide in from left) */
+        .cursive-subtitle,
+        .main-title,
+        .controls-container {
+            opacity: 0;
+            transform: translateX(-20vw);
+            filter: blur(8px);
+            transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), 
+                        transform 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+                        filter 1s ease;
+        }
+
+        /* Right cards slide in from the extremely far right */
+        .right-section h5,
+        .right-section .item-card,
+        .cta-button {
+            opacity: 0;
+            transform: translateX(30vw);
+            filter: blur(8px);
+            transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), 
+                        transform 1.4s cubic-bezier(0.16, 1, 0.3, 1),
+                        filter 1.2s ease;
+        }
+
+        /* Entering State (Slide is Active) */
+        .slide.active .cursive-subtitle { opacity: 1; transform: translateX(0); filter: blur(0); transition-delay: 0.2s; }
+        .slide.active .main-title { opacity: 1; transform: translateX(0); filter: blur(0); transition-delay: 0.3s; }
+        .slide.active .controls-container { opacity: 1; transform: translateX(0); filter: blur(0); transition-delay: 0.4s; }
+
+        .slide.active .right-section:nth-child(1) h5 { opacity: 1; transform: translateX(0); filter: blur(0); transition-delay: 0.4s; }
+        .slide.active .right-section:nth-child(1) .item-card { opacity: 1; transform: translateX(0); filter: blur(0); transition-delay: 0.5s; }
+
+        .slide.active .right-section:nth-child(2) h5 { opacity: 1; transform: translateX(0); filter: blur(0); transition-delay: 0.6s; }
+        .slide.active .right-section:nth-child(2) .item-card:nth-of-type(1) { opacity: 1; transform: translateX(0); filter: blur(0); transition-delay: 0.7s; }
+        .slide.active .right-section:nth-child(2) .item-card:nth-of-type(2) { opacity: 1; transform: translateX(0); filter: blur(0); transition-delay: 0.8s; }
+        .slide.active .right-section:nth-child(2) .item-card:nth-of-type(3) { opacity: 1; transform: translateX(0); filter: blur(0); transition-delay: 0.9s; }
+        .slide.active .right-section:nth-child(2) .item-card:nth-of-type(4) { opacity: 1; transform: translateX(0); filter: blur(0); transition-delay: 1.0s; }
+
+        .slide.active .cta-button { opacity: 1; transform: translateX(0); filter: blur(0); transition-delay: 1.2s; }
+
+        /* Rapid Fade-Out for Outgoing Slide to Prevent Clutter */
+        .slide.outgoing .cursive-subtitle,
+        .slide.outgoing .main-title,
+        .slide.outgoing .controls-container,
+        .slide.outgoing .right-section h5,
+        .slide.outgoing .right-section .item-card,
+        .slide.outgoing .cta-button {
+            opacity: 0 !important;
+            filter: blur(10px) !important;
+            transition: opacity 0.5s ease, filter 0.5s ease !important;
+            transition-delay: 0s !important;
+        }
+
+        /* Prevent Text Selection */
+        .main-title, .cursive-subtitle, h5, h6 {
+            user-select: none;
+        }
     </style>
 </head>
-
 <body>
 
-<!-- HERO SECTION -->
-<div class="hero">
-    <video autoplay muted loop playsinline preload="auto" poster="thumbnail.jpg">
-        <source src="video.mp4" type="video/mp4">
-    </video>
-
-    <div class="overlay"></div>
-
-    <div class="navbar">
-        <div class="logo">
-            <img src="logo.png" alt="Logo">
-        </div>
-
-        <div class="nav-links">
-            <a href="#">HOME</a>
-            <a href="#">FARMHOUSE</a>
-            <a href="#">RESORT</a>
-            <a href="#">LAYOUT</a>
-            <a href="#">LOCATION</a>
-            <a href="#">INVESTMENT</a>
-            <a href="#">GALLERY</a>
-            <a href="#">CONTACT</a>
-        </div>
+    <div class="slider-wrapper" id="slider-wrapper">
+        <div id="slides-container"></div>
+        <div class="theme-switchers" id="theme-switchers"></div>
     </div>
 
-    <div class="bottom-text">
-        <h1>INDIAS 1<sup>st</sup></h1>
-        <p>FARMHOUSE GATED COMMUNITY</p>
-    </div>
-</div>
-
-<!-- THEME SLIDER SECTION -->
-<section>
-    <div class="slider-wrapper" id="themeSlider">
-
-        <!-- THEME 1: ICELAND -->
-        <div class="theme-grid active" id="theme-0" style="--card-bg: #473228; --action-bg: #8c7156; --text: #f0ebe1; background-color: #000000;">
-
-            <div class="card title-card slide-up bg-image" style="background-image: url('https://raw.githubusercontent.com/vatsalvarma/Greensiri-Contact/refs/heads/main/image%201.png')">
-                <div class="title-content">
-                    <h1>RESORT THEME FARMHOUSE</h1>
-                    <p style="font-size: 14px;">Iceland, The Land of Fire and Ice</p>
-                </div>
-            </div>
-
-            <div class="card main-text slide-left bg-solid">
-                <h2>A PERFECT BLEND OF LUXURY, NATURE AND INVESTMENT.</h2>
-                <p style="font-size: 14px;">Witness the Northern Lights, soak in geothermal pools, and explore dramatic landscapes sculpted by volcanoes and glaciers.</p>
-            </div>
-
-            <div class="card action-btn slide-left bg-solid" style="font-size: 20px;">
-                DISCOVER MORE
-            </div>
-
-            <div class="card img2 slide-down bg-image" style="background-image: url('https://raw.githubusercontent.com/vatsalvarma/Greensiri-Contact/refs/heads/main/image%204.png')"></div>
-
-            <div class="nav-container slide-down">
-                <button class="nav-btn prev-btn" style="font-size: 20px;">PREVIOUS</button>
-                <button class="nav-btn next-btn" style="font-size: 20px;">NEXT</button>
-            </div>
-
-            <div class="card explore slide-up bg-solid">
-                <h3 style="font-size: 20px;">EXPLORE</h3>
-                <p style="font-size: 14px;">Golden Circle tour - waterfalls, geysers, and national parks.</p>
-            </div>
-
-            <div class="card center-img slide-up bg-image" style="background-image: url('https://raw.githubusercontent.com/vatsalvarma/Greensiri-Contact/refs/heads/main/imgggg3.png')"></div>
-
-            <div class="card stay slide-down bg-solid">
-                <h3>STAY</h3>
-                <p style="font-size: 14px">Cozy cabins with views of the aurora.</p>
-            </div>
-
-            <div class="card img4 slide-right bg-image" style="background-image: url('https://raw.githubusercontent.com/vatsalvarma/Greensiri-Contact/refs/heads/main/image%203.png')"></div>
-
-            <div class="card cuisine slide-right bg-solid">
-                <h3 style="font-size: 20px;">DESIGN</h3>
-                <p style="font-size: 14px;">Designed to offer not just land ownership, but an exclusive lifestyle experience with multiole aveneues of returns.</p>
-            </div>
-
-            <div class="card food-img slide-down bg-image" style="background-image: url('https://raw.githubusercontent.com/vatsalvarma/Greensiri-Contact/refs/heads/main/image%209.png')"></div>
-        </div>
-
-        <!-- THEME 2: GREECE -->
-        <div class="theme-grid" id="theme-1" style="--card-bg: #51611f; --action-bg: #51611f; --text: #e6f0fa; background-color: #000000;">
-
-            <div class="card title-card slide-up bg-image" style="background-image: url('https://raw.githubusercontent.com/vatsalvarma/Greensiri-Contact/refs/heads/main/hhh1.png')">
-                <div class="title-content">
-                    <h1>Santorini</h1>
-                    <p style="font-size: 14px;">Greece - Island of Dreams</p>
-                </div>
-            </div>
-
-            <div class="card main-text slide-left bg-solid">
-                <h2>NATURE , CULTURE , COMMUNITY</h2>
-                <p style="font-size: 14px;">Where life is slower and health is connected to nature, culture and community with convenience of modern day essentials.</p>
-            </div>
-
-            <div class="card action-btn slide-left bg-solid" style="font-size: 20px;">
-                PLAN YOUR DREAM GETAWAY
-            </div>
-
-            <div class="card img2 slide-down bg-image" style="background-image: url('https://raw.githubusercontent.com/vatsalvarma/Greensiri-Contact/refs/heads/main/hhh5.png')"></div>
-
-            <div class="nav-container slide-down">
-                <button class="nav-btn prev-btn" style="font-size: 20px;">PREVIOUS</button>
-                <button class="nav-btn next-btn" style="font-size: 20px;">NEXT</button>
-            </div>
-
-            <div class="card explore slide-up bg-solid">
-                <h3 style="font-size: 20px;">EXPLORE</h3>
-                <p style="font-size: 14px;">Visit the ancient ruins of Akrotiri and sail the caldera.</p>
-            </div>
-
-            <div class="card center-img slide-up bg-image" style="background-image: url('https://raw.githubusercontent.com/vatsalvarma/Greensiri-Contact/refs/heads/main/hhh6.png')"></div>
-
-            <div class="card stay slide-down bg-solid">
-                <h3>STAY</h3>
-                <p style="font-size: 14px;">Boutique hotel with an pool.</p>
-            </div>
-
-            <div class="card img4 slide-right bg-image" style="background-image: url('https://raw.githubusercontent.com/vatsalvarma/Greensiri-Contact/refs/heads/main/hhh3.png')"></div>
-
-            <div class="card cuisine slide-right bg-solid">
-                <h3 style="font-size: 20px;">LIVING HERE MEANS RETURNING TO INDIAN ROOTS</h3>
-                <p style="font-size: 14px;">Savor Moussaka, fresh feta, and local fine wines.</p>
-            </div>
-
-            <div class="card food-img slide-down bg-image" style="background-image: url('https://raw.githubusercontent.com/vatsalvarma/Greensiri-Contact/refs/heads/main/hhh7.png')"></div>
-        </div>
-    </div>
-</section>
-
-<!-- STRIP GALLERY SECTION -->
-<section class="strip-section" id="gallery">
-    <div class="vmc-title strip-heading"></div>
-    <div class="strip-gallery">
-        <div class="strip-card" onclick="goProject('https://vatsalvarma.github.io/Gallery-greensiri/')">
-            <img src="https://raw.githubusercontent.com/vatsalvarma/Client-Project-/refs/heads/main/forground%201.png">
-            <div class="strip-title">45 ACRES</div>
-        </div>
-        <div class="strip-card" onclick="goProject('https://vatsalvarma.github.io/Gallery-greensiri/')">
-            <img src="https://raw.githubusercontent.com/vatsalvarma/Client-Project-/refs/heads/main/forground%203.png">
-            <div class="strip-title">20+ AMENITIES</div>
-        </div>
-        <div class="strip-card" onclick="goProject('https://vatsalvarma.github.io/Gallery-greensiri/')">
-            <img src="https://raw.githubusercontent.com/vatsalvarma/Client-Project-/refs/heads/main/forground%201.png">
-            <div class="strip-title">200+ PLOTS</div>
-        </div>
-    </div>
-</section>
-
-<!-- MAP SECTION -->
-<section class="map">
-    <img src="https://raw.githubusercontent.com/vatsalvarma/Greensiri-Contact/refs/heads/main/map.2.png">
-</section>
-
-<!-- AMENITIES SECTION -->
-<section class="amenities-scene">
-    <img src="https://raw.githubusercontent.com/vatsalvarma/Greensiri-landingpage/refs/heads/main/women.png" class="girl-image" />
-
-    <div class="card-slider">
-        <div class="card-track" id="cardTrack">
-
-            <div class="amenity-card">
-                <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D">
-                <span>VACATION VILLAS</span>
-            </div>
-
-            <div class="amenity-card active">
-                <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D">
-                <span>amphitheater</span>
-            </div>
-
-            <div class="amenity-card">
-                <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D">
-                <span>CAPITAL ASSETS</span>
-            </div>
-
-            <div class="amenity-card">
-                <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D">
-                <span>FARM LAND</span>
-            </div>
-
-            <div class="amenity-card">
-                <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D">
-                <span>INVESTMENTS</span>
-            </div>
-
-        </div>
-    </div>
-
-    <div class="banner">
-        <p class="top">EXPLORE 20+ AMENITIES @</p>
-        <p class="bottom">YOUR PRIVATE RESORT, IN NATURE</p>
-    </div>
-</section>
-
-<!-- INVESTMENT CIRCLES SECTION -->
-<section class="sec-incomes">
-    <img src="https://raw.githubusercontent.com/vatsalvarma/TarniFarms/refs/heads/main/boyimg.png" class="boy-image" />
-    <div class="bg-image"></div>
-
-    <div class="incomes-header">
-        <h1>ONE INVESTMENT = MULTIPLE INCOMES</h1>
-        <h2>MONTHLY + QUARTERLY + HALF-YEARLY + YEARLY + LONG TERM + LIFETIME</h2>
-    </div>
-
-    <div class="circles-stage">
-        <div class="circles-row" id="circles-row">
-            <!-- JS injected circle items -->
-        </div>
-        <div class="c-info">
-            <div class="c-desc" id="c-desc">FARMHOUSE RENTALS</div>
-            <div class="c-arrows">
-                <button id="c-prev">←</button>
-                <button id="c-next">→</button>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- APPRECIATION WHEEL SECTION -->
-<section class="sec-wheel">
-    <div class="wheel-bg"></div>
-
-    <div class="wheel-content">
-        <div class="arc-container">
-            <div class="arc-rotator" id="arc-rotator"></div>
-        </div>
-
-        <div class="right-display">
-            <div class="top-subtitle" style="font-size: 60px; white-space: nowrap;">WHY LAND WILL GET APPRECIATE</div>
-            <div class="huge-title" style="font-size: 90px;white-space: nowrap;">3X IN 3 YEARS</div>
-
-            <div class="dynamic-info" id="dynamic-info">
-                <div class="info-name" id="info-name" style="white-space: nowrap;">LEPAKSHI TEMPLE</div>
-                <div class="info-tagline" id="info-tagline" style="font-size: 22px; white-space: nowrap">MORE TOURISM = HIGHER LAND VALUE</div>
-                <div class="info-desc" id="info-desc" style="font-size: 17px;">LOREM IPSUM DOLOR SIT AMET, CONSECTETUR ADIPISCING ELIT, SED DO EIUSMOD TEMPOR INCIDIDUNT UT LABORE ET DOLORE MAGNA ALIQUA.</div>
-            </div>
-
-            <div class="wheel-controls">
-                <button id="wheel-prev">←</button>
-                <button id="wheel-next">→</button>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- FARMHOUSES SLIDER SECTION -->
-<section class="farmhouses-section">
-    <div id="slider-container">
-        <div id="layer-bg" class="layer"></div>
-        <div id="layer-text" class="layer"></div>
-        <div id="layer-png" class="layer"></div>
-        <div id="layer-ui" class="layer"></div>
-    </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-    <div class="footer-grid">
-        <div class="footer-col">
-            <span class="footer-bold">GREENSIRI INDIA LLP</span>
-            <p class="footer-text">130/2, 3RD FLOOR, OMKARA BUILDING<br>INTERNATIONAL AIRPORT ROAD, NEHRU NAGAR<br>YELAHANKA, BENGALURU - 64</p>
-        </div>
-        <div class="footer-col">
-            <div class="footer-contact-item">
-                <i class="fa-solid fa-phone"></i>
-                +91 91192 5552
-            </div>
-            <div class="footer-contact-item">
-                <i class="fa-regular fa-envelope"></i>
-                contact@greensiri.in
-            </div>
-        </div>
-        <div class="footer-col">
-            <div style="size:24px; font-weight: 500; display:flex; align-items:center;">
-                <img src="https://raw.githubusercontent.com/vatsalvarma/Client-Project-/refs/heads/main/Asset%2011X.png" class="footer-logo">
-            </div>
-            <p style="font-size:9px; color:#666; margin-top:5px; letter-spacing:1px; font-weight:500;">PATH FOR LUXURY FARMHOUSE</p>
-        </div>
-        <div class="footer-col footer-subscribe">
-            <h5>DO YOU HAVE ANY QUERY?</h5>
-            <form class="subscribe-form">
-                <input type="email" placeholder="Email@greenjsiri.com">
-                <button type="button">SUBSCRIBE</button>
-            </form>
-            <div class="subscribe-note">PLEASE FILL THIS TO SUBSCRIBE OUR UPDATES</div>
-        </div>
-        <div class="footer-col footer-social">
-            <h5>SOCIAL MEDIA LINKS</h5>
-            <div class="footer-social-icons">
-                <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
-                <a href="#"><i class="fa-brands fa-instagram"></i></a>
-                <a href="#"><i class="fa-brands fa-youtube"></i></a>
-                <a href="#"><i class="fa-brands fa-pinterest-p"></i></a>
-                <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
-                <a href="#"><i class="fa-brands fa-whatsapp"></i></a>
-            </div>
-        </div>
-    </div>
-</footer>
-
-
-<script>
-    function goProject(url) {
-        window.location.href = url;
-    }
-
-    // THEME SLIDER FUNCTIONALITY
-    document.addEventListener('DOMContentLoaded', () => {
-        let currentThemeIndex = 0;
-        const themes = document.querySelectorAll('.theme-grid');
-        const sliderWrapper = document.getElementById('themeSlider');
-        const scrollIndicator = document.getElementById('scrollIndicator');
-
-        let isAnimating = false;
-        let isScrollLocked = false;
-        let scrollChangesEnabled = false;
-        let scrollChangeCount = 0;
-        let hasEnteredSection = false;
-
-        function snapToSlider() {
-            const sliderTop = sliderWrapper.offsetTop;
-            window.scrollTo({
-                top: sliderTop,
-                behavior: "instant"
-            });
-        }
-
-        function goToTheme(direction) {
-            if (isAnimating) return;
-            isAnimating = true;
-
-            const outgoing = themes[currentThemeIndex];
-
-            if (direction === 'next') {
-                currentThemeIndex = (currentThemeIndex + 1) % themes.length;
-                scrollChangeCount++;
-            } else {
-                currentThemeIndex = (currentThemeIndex - 1 + themes.length) % themes.length;
+    <script>
+        const themes = [
+            {
+                subtitle: "Visit Iceland",
+                title: "Land of Ice and Fire",
+                image: "https://images.unsplash.com/photo-1476610182048-b716b8518aae?w=1600&q=80",
+                accent: "#a98059",
+                cardBg: "rgba(56, 45, 38, 0.45)",
+                bestTime: "October to March (Northern Lights) or June to August (mild weather).",
+                activities: [
+                    { name: "Golden Circle Tour:", desc: "Visit waterfalls, geysers, and Thingvellir National Park." },
+                    { name: "Northern Lights Tour:", desc: "See the auroras on a clear winter night." },
+                    { name: "Whale Watching:", desc: "Spot humpbacks and orcas off Reykjavik's coast." },
+                    { name: "Glacier Trekking:", desc: "Explore ice caves and volcanic glaciers." }
+                ],
+                ctaText: "START YOUR ICELANDIC ADVENTURE"
+            },
+            {
+                subtitle: "Visit Japan",
+                title: "The Zen Experience",
+                image: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1600&q=80",
+                accent: "#b23a28",
+                cardBg: "rgba(60, 20, 15, 0.45)",
+                bestTime: "March to April (Cherry Blossoms) or October to November (Autumn foliage).",
+                activities: [
+                    { name: "Tea Ceremony Experience:", desc: "Learn the art of making and serving matcha." },
+                    { name: "Fushimi Inari Shrine:", desc: "Walk through thousands of vermilion torii gates." },
+                    { name: "Gion District:", desc: "Spot geishas and explore ancient teahouses." },
+                    { name: "Kiyomizu-dera Temple:", desc: "Enjoy panoramic city views from this UNESCO site." }
+                ],
+                ctaText: "SECURE YOUR ZEN EXPERIENCE"
+            },
+            {
+                subtitle: "Visit Greece",
+                title: "Mediterranean Dream",
+                image: "https://images.unsplash.com/photo-1533105079780-92b9be482077?w=1600&q=80",
+                accent: "#2d6da6",
+                cardBg: "rgba(20, 45, 75, 0.45)",
+                bestTime: "May, June, September or October for warm weather and thinner crowds.",
+                activities: [
+                    { name: "Santorini Caldera Cruise:", desc: "Sail around the volcano and soak in hot springs." },
+                    { name: "Acropolis Tour:", desc: "Discover Athens' ancient citadel and Parthenon." },
+                    { name: "Mykonos Beach Hopping:", desc: "Experience pristine beaches and vibrant nightlife." },
+                    { name: "Delphi Excursion:", desc: "Visit the sanctuary of Apollo in the mountains." }
+                ],
+                ctaText: "PLAN YOUR GRECIAN ESCAPE"
+            },
+            {
+                subtitle: "Visit Kenya",
+                title: "The Great Safari",
+                image: "https://images.unsplash.com/photo-1516426122078-c23e76319801?w=1600&q=80",
+                accent: "#a67c52",
+                cardBg: "rgba(50, 40, 30, 0.45)",
+                bestTime: "July to October for the spectacular Great Migration.",
+                activities: [
+                    { name: "Masai Mara Game Drive:", desc: "Track the Big Five across the golden savanna." },
+                    { name: "Hot Air Balloon Safari:", desc: "Float above the plains at sunrise." },
+                    { name: "Giraffe Manor Visit:", desc: "Interact with endangered Rothschild's giraffes." },
+                    { name: "Mount Kenya Trek:", desc: "Hike Africa's second highest peak." }
+                ],
+                ctaText: "BOOK YOUR KENYAN SAFARI"
+            },
+            {
+                subtitle: "Visit Maldives",
+                title: "Tropical Paradise",
+                image: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=1600&q=80",
+                accent: "#2c8b91",
+                cardBg: "rgba(20, 50, 60, 0.45)",
+                bestTime: "November to April for sunny days and clear skies.",
+                activities: [
+                    { name: "Scuba Diving:", desc: "Explore vibrant coral reefs and marine life." },
+                    { name: "Sunset Dolphin Cruise:", desc: "Watch playful dolphins in the Indian Ocean." },
+                    { name: "Overwater Spa:", desc: "Relax with traditional treatments above the water." },
+                    { name: "Underwater Dining:", desc: "Enjoy exquisite cuisine surrounded by sea life." }
+                ],
+                ctaText: "RESERVE YOUR ISLAND RETREAT"
+            },
+            {
+                subtitle: "Visit Switzerland",
+                title: "Alpine Splendor",
+                image: "https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?w=1600&q=80",
+                accent: "#6b8ea5",
+                cardBg: "rgba(35, 45, 60, 0.45)",
+                bestTime: "December to March for snow sports, or June to September for hiking.",
+                activities: [
+                    { name: "Glacier Express:", desc: "Take a scenic train ride through the Alps." },
+                    { name: "Matterhorn Skiing:", desc: "Hit the slopes near the iconic peak in Zermatt." },
+                    { name: "Lake Geneva Cruise:", desc: "Sail past castles and vineyards on pristine waters." },
+                    { name: "Jungfraujoch Excursion:", desc: "Visit the 'Top of Europe' via cogwheel train." }
+                ],
+                ctaText: "EXPLORE THE SWISS ALPS"
             }
-
-            const incoming = themes[currentThemeIndex];
-
-            outgoing.classList.replace('active', 'outgoing');
-            incoming.classList.add('active');
-
-            setTimeout(() => {
-                outgoing.classList.remove('outgoing');
-                isAnimating = false;
-
-                if (scrollChangeCount >= 2) {
-                    setTimeout(() => {
-                        unlockScroll();
-                        scrollIndicator.classList.add('visible');
-                        setTimeout(() => {
-                            scrollIndicator.classList.remove('visible');
-                        }, 2000);
-                    }, 400);
-                }
-            }, 300);
-        }
-
-        document.querySelectorAll('.next-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                if (scrollChangesEnabled || !isScrollLocked) {
-                    goToTheme('next');
-                }
-            });
-        });
-
-        document.querySelectorAll('.prev-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                if (scrollChangesEnabled || !isScrollLocked) {
-                    goToTheme('prev');
-                }
-            });
-        });
-
-        function lockScroll() {
-            if (!isScrollLocked) {
-                isScrollLocked = true;
-                scrollChangesEnabled = true;
-                scrollChangeCount = 0;
-                document.body.style.overflow = 'hidden';
-                document.body.style.position = 'fixed';
-                document.body.style.width = '100%';
-            }
-        }
-
-        function unlockScroll() {
-            if (isScrollLocked) {
-                isScrollLocked = false;
-                document.body.style.overflow = '';
-                document.body.style.position = '';
-                document.body.style.width = '';
-                window.scrollBy(0, 10);
-            }
-        }
-
-        const observerOptions = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.95
-        };
-
-        const sliderObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting && !hasEnteredSection) {
-                    hasEnteredSection = true;
-                    snapToSlider();
-                    setTimeout(() => {
-                        lockScroll();
-                    }, 0);
-                }
-            });
-        }, {
-            threshold: 0.97
-        });
-
-        sliderObserver.observe(sliderWrapper);
-
-        let lastScrollTime = 0;
-        const scrollThrottle = 500;
-
-        function handleWheel(e) {
-            if (!isScrollLocked || !scrollChangesEnabled || isAnimating) return;
-            if (scrollChangeCount >= 2) return;
-
-            const currentTime = Date.now();
-            if (currentTime - lastScrollTime < scrollThrottle) return;
-
-            lastScrollTime = currentTime;
-
-            if (e.deltaY > 0) {
-                e.preventDefault();
-                goToTheme('next');
-            } else {
-                e.preventDefault();
-                goToTheme('prev');
-            }
-        }
-
-        window.addEventListener('wheel', handleWheel, { passive: false });
-
-        let touchStartY = 0;
-        let touchEndY = 0;
-
-        window.addEventListener('touchstart', (e) => {
-            touchStartY = e.changedTouches[0].screenY;
-        }, { passive: true });
-
-        window.addEventListener('touchend', (e) => {
-            if (!isScrollLocked || !scrollChangesEnabled || isAnimating) return;
-            if (scrollChangeCount >= 2) return;
-
-            touchEndY = e.changedTouches[0].screenY;
-            const diff = touchStartY - touchEndY;
-
-            if (Math.abs(diff) > 50) {
-                const currentTime = Date.now();
-                if (currentTime - lastScrollTime < scrollThrottle) return;
-
-                if (diff > 0) {
-                    if (currentThemeIndex < themes.length - 1 && scrollChangeCount < 2) {
-                        lastScrollTime = currentTime;
-                        goToTheme('next');
-                    }
-                } else {
-                    if (currentThemeIndex > 0) {
-                        lastScrollTime = currentTime;
-                        goToTheme('prev');
-                    }
-                }
-            }
-        }, { passive: true });
-    });
-
-    // AMENITIES CARD SLIDER FUNCTIONALITY
-    const track = document.getElementById("cardTrack");
-    let cards = document.querySelectorAll(".amenity-card");
-    let index = 1;
-
-    function updateSlider() {
-        cards.forEach(c => c.classList.remove("active"));
-        cards[index].classList.add("active");
-
-        const containerWidth = document.querySelector(".card-slider").offsetWidth;
-        const cardWidth = cards[index].offsetWidth;
-        const offset = cards[index].offsetLeft - (containerWidth / 2 - cardWidth / 2);
-
-        track.style.transform = `translateX(-${offset}px)`;
-    }
-
-   let autoSlide;
-
-function startAutoSlide() {
-    autoSlide = setInterval(() => {
-        index++;
-        if (index >= cards.length - 1) {
-            index = 1;
-        }
-        updateSlider();
-    }, 2500);
-}
-
-const slider = document.querySelector(".card-slider");
-
-slider.addEventListener("mouseenter", () => {
-    stopAutoSlide();
-});
-
-slider.addEventListener("mouseleave", () => {
-    startAutoSlide();
-});
-
-function stopAutoSlide() {
-    clearInterval(autoSlide);
-}
-
-    updateSlider();
-    startAutoSlide();
-
-    /* ================================================
-       INVESTMENT CIRCLES SECTION
-       ================================================ */
-    const circleData = [
-        { top: "LIFETIME",    bottom: "LEGACY GENERATION",    img: "https://www.colorhexa.com/4a3424.png" },
-        { top: "MONTHLY",     bottom: "FARMHOUSE RENTALS",    img: "https://www.colorhexa.com/4a3424.png" },
-        { top: "QUARTERLY",   bottom: "AGRICULTURE YIELD",    img: "https://www.colorhexa.com/4a3424.png" },
-        { top: "HALF-YEARLY", bottom: "VACATION HOMES",       img: "https://www.colorhexa.com/4a3424.png" },
-        { top: "YEARLY",      bottom: "RESIDENTIAL PLOTS",    img: "https://www.colorhexa.com/4a3424.png" },
-        { top: "LONG TERM",   bottom: "CAPITAL APPRECIATION", img: "https://www.colorhexa.com/4a3424.png" }
-    ];
-
-    const CN = circleData.length;
-    const CD = 200;
-    const SD = 160;
-    const GAP = 40;
-    const DIST = CD / 2 + SD / 2 + GAP;
-
-    let cActive = 1;
-    let cAutoInterval;
-
-    const cRowEl  = document.getElementById('circles-row');
-    const cDescEl = document.getElementById('c-desc');
-    let cItems = [];
-
-    function cGetPos(i) {
-        const diff = ((i - cActive) % CN + CN) % CN;
-        if (diff === 0)        return 'center';
-        if (diff === 1)        return 'right';
-        if (diff === CN - 1)   return 'left';
-        if (diff === 2)        return 'far-right';
-        if (diff === CN - 2)   return 'far-left';
-        return 'hidden';
-    }
-
-    function cUpdate() {
-        cItems.forEach(({ el, shape, label }, i) => {
-            const pos = cGetPos(i);
-            let tx, opacity, zIdx, w, h, lSize, lWeight, lOpacity, pointer;
-
-            switch (pos) {
-                case 'center':
-                    tx = 0; opacity = 1; zIdx = 10;
-                    w = h = CD;
-                    lSize = '26px'; lWeight = '800'; lOpacity = '1';
-                    pointer = 'none';
-                    break;
-                case 'left':
-                    tx = -DIST; opacity = 1; zIdx = 5;
-                    w = h = SD;
-                    lSize = '15px'; lWeight = '600'; lOpacity = '0.72';
-                    pointer = 'auto';
-                    break;
-                case 'right':
-                    tx = DIST; opacity = 1; zIdx = 5;
-                    w = h = SD;
-                    lSize = '15px'; lWeight = '600'; lOpacity = '0.72';
-                    pointer = 'auto';
-                    break;
-                case 'far-left':
-                    tx = -(DIST * 3.2); opacity = 0; zIdx = 1;
-                    w = h = SD;
-                    lSize = '15px'; lWeight = '600'; lOpacity = '0';
-                    pointer = 'none';
-                    break;
-                case 'far-right':
-                    tx = DIST * 3.2; opacity = 0; zIdx = 1;
-                    w = h = SD;
-                    lSize = '15px'; lWeight = '600'; lOpacity = '0';
-                    pointer = 'none';
-                    break;
-                default:
-                    tx = 0; opacity = 0; zIdx = 0;
-                    w = h = SD;
-                    lSize = '15px'; lWeight = '600'; lOpacity = '0';
-                    pointer = 'none';
-            }
-
-            el.style.transform     = `translate(calc(-50% + ${tx}px), -50%)`;
-            el.style.opacity       = opacity;
-            el.style.zIndex        = zIdx;
-            el.style.pointerEvents = pointer;
-
-            shape.style.width  = w + 'px';
-            shape.style.height = h + 'px';
-
-            label.textContent        = circleData[i].top;
-            label.style.fontSize     = lSize;
-            label.style.fontWeight   = lWeight;
-            label.style.opacity      = lOpacity;
-        });
-
-        cDescEl.style.opacity = '0';
-        setTimeout(() => {
-            cDescEl.textContent   = circleData[cActive].bottom;
-            cDescEl.style.opacity = '1';
-        }, 260);
-    }
-
-    function cNavigate(dir) {
-        cActive = ((cActive + dir) % CN + CN) % CN;
-        cUpdate();
-    }
-
-    function cResetAuto() {
-        clearInterval(cAutoInterval);
-        cAutoInterval = setInterval(() => cNavigate(1), 2000);
-    }
-
-    (function initCircles() {
-        circleData.forEach((d, i) => {
-            const el    = document.createElement('div');
-            el.className = 'c-item';
-            el.innerHTML = `
-                <div class="c-label"></div>
-                <div class="c-shape" style="background-image:url('${d.img}')"></div>`;
-            cRowEl.appendChild(el);
-
-            const shape = el.querySelector('.c-shape');
-            const label = el.querySelector('.c-label');
-            cItems.push({ el, shape, label });
-
-            el.addEventListener('click', () => {
-                const pos = cGetPos(i);
-                if (pos === 'left')  { cNavigate(-1); cResetAuto(); }
-                if (pos === 'right') { cNavigate(1);  cResetAuto(); }
-            });
-        });
-
-        cRowEl.addEventListener('mouseenter', () => {
-            clearInterval(cAutoInterval);
-        });
-
-        cRowEl.addEventListener('mouseleave', () => {
-            cResetAuto();
-        });
-
-        let dragStart = 0, isDragging = false, hasMoved = false;
-
-        cRowEl.addEventListener('mousedown', e => {
-            dragStart = e.clientX; isDragging = true; hasMoved = false;
-        });
-        window.addEventListener('mousemove', e => {
-            if (isDragging && Math.abs(e.clientX - dragStart) > 8) hasMoved = true;
-        });
-        window.addEventListener('mouseup', e => {
-            if (!isDragging) return;
-            isDragging = false;
-            if (hasMoved) {
-                const dx = e.clientX - dragStart;
-                if (Math.abs(dx) > 60) { cNavigate(dx > 0 ? -1 : 1); cResetAuto(); }
-            }
-        });
-
-        cRowEl.addEventListener('touchstart', e => { dragStart = e.touches[0].clientX; }, { passive: true });
-        cRowEl.addEventListener('touchend',   e => {
-            const dx = e.changedTouches[0].clientX - dragStart;
-            if (Math.abs(dx) > 60) { cNavigate(dx > 0 ? -1 : 1); cResetAuto(); }
-        });
-
-        document.getElementById('c-prev').addEventListener('click', () => { cNavigate(-1); cResetAuto(); });
-        document.getElementById('c-next').addEventListener('click', () => { cNavigate(1);  cResetAuto(); });
-
-        cUpdate();
-        cResetAuto();
-    })();
-
-     /* ================================================
-       APPRECIATION WHEEL SECTION
-       ================================================ */
-    const wheelData = [
-        {
-            id: 0,
-            title: "PRIME LOCATION",
-            name: "PREMIUM CORRIDOR",
-            tag: "CONNECTIVITY = MORE DEMAND",
-            desc: "Located along major highways connecting business hubs. Lorem ipsum dolor sit amet.",
-            icon: "https://raw.githubusercontent.com/vatsalvarma/TarniFarms/refs/heads/main/location.png",
-            iconWidth: "40px",
-            iconHeight: "40px",
-            activeWidth: "140px",
-            activeHeight: "100px"
-        },
-        {
-            id: 1,
-            title: "LEPAKSHI TEMPLE",
-            name: "LEPAKSHI TEMPLE",
-            tag: "MORE TOURISM = HIGHER LAND VALUE",
-            desc: "A world-class spiritual destination drawing thousands. Lorem ipsum dolor sit amet, consectetur adipiscing elit, Lorem epsum lorem, lorem suzain epsum.",
-            icon: "https://raw.githubusercontent.com/vatsalvarma/TarniFarms/refs/heads/main/temple.png",
-            iconWidth: "40px",
-            iconHeight: "40px",
-            activeWidth: "140px",
-            activeHeight: "140px"
-        },
-        {
-            id: 2,
-            title: "INDUSTRIAL GROWTH",
-            name: "SPECIAL ECONOMIC ZONE",
-            tag: "JOB CREATION = RAPID APPRECIATION",
-            desc: "Adjacent to booming manufacturing and tech parks.",
-            icon: "https://raw.githubusercontent.com/vatsalvarma/TarniFarms/refs/heads/main/factory.png",
-            iconWidth: "40px",
-            iconHeight: "40px",
-            activeWidth: "140px",
-            activeHeight: "140px"
-        },
-        {
-            id: 3,
-            title: "RESORT",
-            name: "RESORT STAY PLACE",
-            tag: "GLOBAL ACCESS = PRICE SURGE",
-            desc: "Just 20 minutes from the upcoming international transit center.",
-            icon: "https://raw.githubusercontent.com/vatsalvarma/TarniFarms/refs/heads/main/resort.png",
-            iconWidth: "40px",
-            iconHeight: "40px",
-            activeWidth: "140px",
-            activeHeight: "140px"
-        },
-        {
-            id: 4,
-            title: "LEPAKSHI TEMPLE",
-            name: "LUSH RESERVES",
-            tag: "NATURE = PREMIUM PRICING",
-            desc: "Surrounded by protected greenery ensuring a serene lifestyle evermore.",
-            icon: "https://raw.githubusercontent.com/vatsalvarma/TarniFarms/refs/heads/main/temple.png",
-            iconWidth: "40px",
-            iconHeight: "40px",
-            activeWidth: "140px",
-            activeHeight: "140px"
-        },
-        {
-            id: 5,
-            title: "INDUSTRIAL GROWTH",
-            name: "URBAN METRO",
-            tag: "LIFESTYLE = HIGH RENTAL YIELD",
-            desc: "Seamless connectivity to the vibrant downtown area.",
-            icon: "https://raw.githubusercontent.com/vatsalvarma/TarniFarms/refs/heads/main/factory.png",
-            iconWidth: "40px",
-            iconHeight: "40px",
-            activeWidth: "140px",
-            activeHeight: "140px"
-        }
-    ];
-
-    const arcRotator   = document.getElementById('arc-rotator');
-    const dynamicInfo  = document.getElementById('dynamic-info');
-    const infoName     = document.getElementById('info-name');
-    const infoTagline  = document.getElementById('info-tagline');
-    const infoDesc     = document.getElementById('info-desc');
-
-    const totalWheelItems = 6;
-    let   currentAngle    = 0;
-    let   wheelActiveIndex = 1;
-
-    function initWheel() {
-        wheelData.forEach((item, i) => {
-            const node   = document.createElement('div');
-            node.className = 'wheel-node';
-            node.dataset.index = i;
-            const degree = i * 60;
-            node.innerHTML = `
-                <img src="${item.icon}" alt="${item.title}" style="width: ${item.iconWidth}; height: ${item.iconHeight};">
-                <span class="node-label">${item.title}</span>`;
-            node.style.transform = `rotate(${degree}deg) translate(40vh) rotate(-${degree}deg)`;
-            arcRotator.appendChild(node);
-        });
-        updateWheelUI();
-    }
-
-    function updateWheelUI() {
-        const targetRotation = -currentAngle;
-        arcRotator.style.transform = `rotate(${targetRotation}deg)`;
-
-        document.querySelectorAll('.wheel-node').forEach((node, i) => {
-            const degree = i * 60 - 60;
-            node.style.transform = `rotate(${degree}deg) translate(40vh) rotate(${-(degree + targetRotation)}deg)`;
-            const isActive = i === wheelActiveIndex;
-            node.classList.toggle('active', isActive);
-
-            const img = node.querySelector('img');
-            if (isActive) {
-                img.style.width = wheelData[i].activeWidth;
-                img.style.height = wheelData[i].activeHeight;
-                img.style.filter = 'drop-shadow(0 0 10px rgba(255,255,255,0.8))';
-            } else {
-                img.style.width = wheelData[i].iconWidth;
-                img.style.height = wheelData[i].iconHeight;
-                img.style.filter = 'brightness(0) invert(1)';
-            }
-        });
-
-        const activeData = wheelData[wheelActiveIndex];
-        dynamicInfo.classList.remove('show');
-        setTimeout(() => {
-            infoName.textContent    = activeData.name;
-            infoTagline.textContent = activeData.tag;
-            infoDesc.textContent    = activeData.desc;
-            dynamicInfo.classList.add('show');
-        }, 500);
-    }
-
-    let wheelInterval;
-    function startWheelInterval() {
-        wheelInterval = setInterval(() => rotateWheel('next'), 4000);
-    }
-
-    function rotateWheel(direction) {
-        if (direction === 'next') {
-            wheelActiveIndex = (wheelActiveIndex + 1) % totalWheelItems;
-            currentAngle += 60;
-        } else {
-            wheelActiveIndex = (wheelActiveIndex - 1 + totalWheelItems) % totalWheelItems;
-            currentAngle -= 60;
-        }
-        updateWheelUI();
-    }
-
-    initWheel();
-    startWheelInterval();
-
-    document.getElementById('wheel-next').addEventListener('click', () => {
-        clearInterval(wheelInterval); rotateWheel('next'); startWheelInterval();
-    });
-    document.getElementById('wheel-prev').addEventListener('click', () => {
-        clearInterval(wheelInterval); rotateWheel('prev'); startWheelInterval();
-    });
-
-
-   /* ================================================
-       FARMHOUSES SLIDER
-       ================================================ */
-    const slidesData = [
-        {
-            bg: "https://raw.githubusercontent.com/vatsalvarma/Greensiri-Parallax-Tarini/refs/heads/main/capsule%20bg.png",
-            png: "https://raw.githubusercontent.com/vatsalvarma/TarniFarms/refs/heads/main/capsule2.0new.png",
-            heroText1: "CAPSULE", heroText2: "STAY", title: "ADVANTAGES",
-            subtitle: "FARMHOUSES<br>CRAFTED FOR YOU",
-            cards: [
-                { title: "BUDGET FRIENDLY STAY",  desc: "AFFORDABLE ALTERNATIVE TO HOTELS WITHOUT COMPROMISING BASIC COMFORT." },
-                { title: "COMPACT PRIVATE SPACE", desc: "PERSONAL SLEEPING POD THAT OFFERS PRIVACY IN A SMALL FOOTPRINT." },
-                { title: "PRIME LOCATION ACCESS", desc: "USUALLY LOCATED NEAR TRANSIT HUBS AND CITY HOTSPOTS." },
-                { title: "SAFE SECURE PODS",       desc: "INDIVIDUAL CAPSULES WITH LOCKERS AND CONTROLLED ENTRY FOR SAFETY." }
-            ]
-        },
-        {
-            bg: "https://raw.githubusercontent.com/vatsalvarma/Greensiri-Parallax-Tarini/refs/heads/main/domestay%20bg.png",
-            png: "https://raw.githubusercontent.com/vatsalvarma/TarniFarms/refs/heads/main/domestay2.0new.png",
-            heroText1: "DOME", heroText2: "STAY", title: "ADVANTAGES",
-            subtitle: "FARMHOUSES<br>CRAFTED FOR YOU",
-            cards: [
-                { title: "FUTURISTIC",                    desc: "THE DOME DESIGN GIVES A MODERN, UNIQUE LOOK THAT ENHANCES VISUAL APPEAL." },
-                { title: "FASTER SETUP",                  desc: "PREFABRICATED DOME STRUCTURES CAN BE ASSEMBLED QUICKLY WITH MINIMAL CONSTRUCTION TIME." },
-                { title: "LOWER STRUCTURAL COST",         desc: "THE CURVED SHAPE USES FEWER MATERIALS WHILE MAINTAINING STRENGTH." },
-                { title: "MAINTAIN INTERNAL TEMPERATURE", desc: "THE DOME SHAPE ALLOWS BETTER AIR CIRCULATION AND INSULATION." }
-            ]
-        },
-        {
-            bg: "https://raw.githubusercontent.com/vatsalvarma/TarniFarms/refs/heads/main/interlocking%20house_bg.png",
-            png: "https://raw.githubusercontent.com/vatsalvarma/TarniFarms/refs/heads/main/interlocking%20house_front.png",
-            heroText1: "INTERLOCKING", heroText2: "STAY", title: "ADVANTAGES",
-            subtitle: "FARMHOUSES<br>CRAFTED FOR YOU",
-            cards: [
-                { title: "NATURE IMMERSION",  desc: "EXPERIENCE THE GREAT OUTDOORS WITHOUT SACRIFICING LUXURY AND COMFORT." },
-                { title: "ECO-FRIENDLY",      desc: "MINIMAL ENVIRONMENTAL IMPACT WITH SUSTAINABLE MATERIALS." },
-                { title: "QUICK DEPLOYMENT",  desc: "CAN BE SET UP IN A FRACTION OF THE TIME NEEDED FOR TRADITIONAL BUILDINGS." },
-                { title: "VERSATILE LOCATIONS", desc: "PERFECT FOR REMOTE AND SCENIC LOCATIONS WHERE TRADITIONAL CONSTRUCTION IS DIFFICULT." }
-            ]
-        },
-        {
-            bg: "https://raw.githubusercontent.com/vatsalvarma/TarniFarms/refs/heads/main/Mandava_Bg.png",
-            png: "https://raw.githubusercontent.com/vatsalvarma/TarniFarms/refs/heads/main/Mandava_front.png",
-            heroText1: "MANDAVA", heroText2: "STAY", title: "ADVANTAGES",
-            subtitle: "FARMHOUSES<br>CRAFTED FOR YOU",
-            cards: [
-                { title: "RUSTIC CHARM",         desc: "CLASSIC WOODEN AESTHETICS THAT BLEND PERFECTLY WITH FOREST SURROUNDINGS." },
-                { title: "ALL-WEATHER DURABILITY", desc: "BUILT TO WITHSTAND HARSH CONDITIONS WHILE KEEPING THE INTERIOR COZY." },
-                { title: "SPACIOUS INTERIORS",   desc: "MULTIPLE ROOMS AND LOFTS PROVIDE AMPLE LIVING SPACE FOR FAMILIES." },
-                { title: "LONG-TERM VALUE",      desc: "A DURABLE INVESTMENT THAT APPRECIATES IN VALUE OVER TIME." }
-            ]
-        },
-        {
-            bg: "https://raw.githubusercontent.com/vatsalvarma/TarniFarms/refs/heads/main/Mud%20House_bg.png",
-            png: "https://raw.githubusercontent.com/vatsalvarma/TarniFarms/refs/heads/main/Mud%20House_front.png",
-            heroText1: "MUDHOUSE", heroText2: "STAY", title: "ADVANTAGES",
-            subtitle: "FARMHOUSES<br>CRAFTED FOR YOU",
-            cards: [
-                { title: "PREMIUM LUXURY",    desc: "HIGH-END FINISHES AND AMENITIES FOR THE ULTIMATE RELAXATION EXPERIENCE." },
-                { title: "PRIVATE POOLS",     desc: "ENJOY YOUR OWN EXCLUSIVE SWIMMING RESORT IN COMPLETE PRIVACY." },
-                { title: "EXPANSIVE VIEWS",   desc: "LARGE GLASS PANELS OFFERING UNINTERRUPTED VIEWS OF THE SURROUNDINGS." },
-                { title: "SMART HOME TECH",   desc: "INTEGRATED SYSTEMS FOR CLIMATE, LIGHTING, AND ENTERTAINMENT CONTROL." }
-            ]
-        },
-        {
-            bg: "https://raw.githubusercontent.com/vatsalvarma/TarniFarms/refs/heads/main/Prefab_bg.png",
-            png: "https://raw.githubusercontent.com/vatsalvarma/TarniFarms/refs/heads/main/Prefab_front.png",
-            heroText1: "LODGE", heroText2: "STAY", title: "ADVANTAGES",
-            subtitle: "FARMHOUSES<br>CRAFTED FOR YOU",
-            cards: [
-                { title: "COMMUNITY FEEL",    desc: "DESIGNED FOR GROUP GATHERINGS WITH LARGE SHARED SPACES AND KITCHENS." },
-                { title: "AUTHENTIC DESIGN",  desc: "TRADITIONAL CRAFTSMANSHIP MEETING CONTEMPORARY REQUIREMENTS." },
-                { title: "NATURE TRAILS",     desc: "DIRECT ACCESS TO HIKING PATHS AND OUTDOOR RECREATION AREAS." },
-                { title: "YEAR-ROUND APPEAL", desc: "PERFECT FOR BOTH SUMMER RETREATS AND WINTER SKI VACATIONS." }
-            ]
-        }
-    ];
-
-    const layerBg   = document.getElementById('layer-bg');
-    const layerText = document.getElementById('layer-text');
-    const layerPng  = document.getElementById('layer-png');
-    const layerUi   = document.getElementById('layer-ui');
-
-    function initSlider() {
-        slidesData.forEach((slide, i) => {
-            const bgDiv = document.createElement('div');
-            bgDiv.className = `bg-slide ${i === 0 ? 'active' : ''}`;
-            bgDiv.style.backgroundImage = `url(${slide.bg})`;
-            bgDiv.appendChild(Object.assign(document.createElement('div'), { className: 'bg-overlay' }));
-            layerBg.appendChild(bgDiv);
-
-            const textDiv = document.createElement('div');
-            textDiv.className = `text-slide ${i === 0 ? 'active' : ''}`;
-            textDiv.innerHTML = `<div class="hero-title"><span class="filled">${slide.heroText1}</span><span class="outlined">${slide.heroText2}</span></div>`;
-            layerText.appendChild(textDiv);
-
-            const pngImg = document.createElement('img');
-            pngImg.className = `png-slide ${i === 0 ? 'active' : ''}`;
-            pngImg.src = slide.png;
-            pngImg.alt = slide.heroText1;
-            layerPng.appendChild(pngImg);
-
-            const cardsHtml = slide.cards.map(card => `
-                <div class="adv-item">
-                    <h4>${card.title}</h4>
-                    <p>${card.desc}</p>
-                </div>`).join('');
-
-            const uiDiv = document.createElement('div');
-            uiDiv.className = `ui-slide ${i === 0 ? 'active' : ''}`;
-            uiDiv.innerHTML = `
-                <div class="bottom-left-panel">
-                    <div class="crafted-text">${slide.subtitle}</div>
-                    <div class="slider-controls">
-                        <button class="arrow-btn prev-btn">
-                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                        </button>
-                        <button class="arrow-btn next-btn">
-                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                        </button>
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('slides-container');
+            const switchers = document.getElementById('theme-switchers');
+
+            // 1. Generate HTML
+            themes.forEach((theme, index) => {
+                // Generate Switcher Dash
+                const dash = document.createElement('div');
+                dash.className = `dash-btn ${index === 0 ? 'active' : ''}`;
+                dash.dataset.index = index;
+                switchers.appendChild(dash);
+
+                // Generate Activities HTML
+                let activitiesHTML = '';
+                theme.activities.forEach(act => {
+                    activitiesHTML += `
+                        <div class="item-card">
+                            <h6>${act.name}</h6>
+                            <p>${act.desc}</p>
+                        </div>
+                    `;
+                });
+
+                // Generate Slide HTML
+                const slideHTML = `
+                    <div class="slide ${index === 0 ? 'active' : ''}" style="--theme-accent: ${theme.accent}; --card-bg: ${theme.cardBg};">
+                        <div class="bg-layer">
+                            <img class="bg-image" src="${theme.image}" alt="${theme.title}">
+                            <div class="overlay"></div>
+                        </div>
+                        
+                        <div class="content-layer">
+                            <div class="left-panel">
+                                <h4 class="cursive-subtitle">${theme.subtitle}</h4>
+                                <h1 class="main-title">${theme.title}</h1>
+                                
+                                <div class="controls-container">
+                                    <button class="icon-btn prev-btn">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                                    </button>
+                                    <button class="icon-btn next-btn">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                                    </button>
+                                    <button class="icon-btn explore-btn">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="right-panel">
+                                <div class="right-section">
+                                    <h5>BEST TIME TO VISIT</h5>
+                                    <div class="item-card">
+                                        <p>${theme.bestTime}</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="right-section">
+                                    <h5>MUST-DO ACTIVITIES</h5>
+                                    ${activitiesHTML}
+                                </div>
+
+                                <button class="cta-button">${theme.ctaText}</button>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="right-panel">
-                    <div class="glass-title">${slide.title}</div>
-                    <div class="adv-list">${cardsHtml}</div>
-                </div>`;
-            layerUi.appendChild(uiDiv);
+                `;
+                container.insertAdjacentHTML('beforeend', slideHTML);
+            });
+
+            // 2. Setup Animation Logic
+            const slides = document.querySelectorAll('.slide');
+            const dashes = document.querySelectorAll('.dash-btn');
+            const prevBtns = document.querySelectorAll('.prev-btn');
+            const nextBtns = document.querySelectorAll('.next-btn');
+            
+            let currentIndex = 0;
+            let isAnimating = false;
+
+            function goToSlide(index) {
+                if (isAnimating || index === currentIndex) return;
+                isAnimating = true;
+
+                const outgoingSlide = slides[currentIndex];
+                const incomingSlide = slides[index];
+
+                // Remove display 'none' by making it active before doing the transform
+                incomingSlide.classList.add('active');
+                outgoingSlide.classList.replace('active', 'outgoing');
+
+                // Update switchers
+                dashes[currentIndex].classList.remove('active');
+                dashes[index].classList.add('active');
+
+                currentIndex = index;
+
+                // Wait for the full clip-path / transform duration to finish
+                setTimeout(() => {
+                    outgoingSlide.classList.remove('outgoing');
+                    isAnimating = false;
+                }, 1650); // wait for --transition-duration (1.6s) + padding
+            }
+
+            // 3. Attach Event Listeners
+            dashes.forEach(dash => {
+                dash.addEventListener('click', () => {
+                    const index = parseInt(dash.getAttribute('data-index'));
+                    goToSlide(index);
+                });
+            });
+
+            nextBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    goToSlide((currentIndex + 1) % slides.length);
+                });
+            });
+
+            prevBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    goToSlide((currentIndex - 1 + slides.length) % slides.length);
+                });
+            });
+
         });
-
-        bindControls();
-    }
-
-    let currIndex = 0;
-    let isAnimating = false;
-
-    function goToSlide(nextIndex) {
-        if (isAnimating || nextIndex === currIndex) return;
-        isAnimating = true;
-
-        const bgSlides   = document.querySelectorAll('.bg-slide');
-        const textSlides = document.querySelectorAll('.text-slide');
-        const pngSlides  = document.querySelectorAll('.png-slide');
-        const uiSlides   = document.querySelectorAll('.ui-slide');
-
-        bgSlides[currIndex].classList.replace('active', 'prev');
-        textSlides[currIndex].classList.replace('active', 'prev');
-        pngSlides[currIndex].classList.replace('active', 'prev');
-        uiSlides[currIndex].classList.replace('active', 'prev');
-
-        bgSlides[nextIndex].classList.remove('prev');
-        textSlides[nextIndex].classList.remove('prev');
-        pngSlides[nextIndex].classList.remove('prev');
-        uiSlides[nextIndex].classList.remove('prev');
-
-        void bgSlides[nextIndex].offsetWidth;
-
-        bgSlides[nextIndex].classList.add('active');
-        textSlides[nextIndex].classList.add('active');
-        pngSlides[nextIndex].classList.add('active');
-        uiSlides[nextIndex].classList.add('active');
-
-        const prevIndex = currIndex;
-        currIndex = nextIndex;
-
-        setTimeout(() => {
-            const toReset = [bgSlides[prevIndex], textSlides[prevIndex], pngSlides[prevIndex], uiSlides[prevIndex]];
-
-            toReset.forEach(el => el.style.transition = 'none');
-
-            bgSlides[prevIndex].classList.remove('prev');
-            textSlides[prevIndex].classList.remove('prev');
-            pngSlides[prevIndex].classList.remove('prev');
-            uiSlides[prevIndex].classList.remove('prev');
-
-            void bgSlides[prevIndex].offsetWidth;
-
-            toReset.forEach(el => el.style.transition = '');
-
-            isAnimating = false;
-        }, 1800);
-    }
-
-    function bindControls() {
-        document.querySelectorAll('.next-btn').forEach(btn => {
-            btn.addEventListener('click', () => goToSlide((currIndex + 1) % slidesData.length));
-        });
-        document.querySelectorAll('.prev-btn').forEach(btn => {
-            btn.addEventListener('click', () => goToSlide((currIndex - 1 + slidesData.length) % slidesData.length));
-        });
-    }
-
-    initSlider();
-</script>
-
+    </script>
 </body>
 </html>
